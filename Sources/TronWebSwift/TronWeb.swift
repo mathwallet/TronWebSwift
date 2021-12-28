@@ -25,7 +25,8 @@ public struct TronWeb {
                     $0.amount = amount
                 }
                 var tx =  try provider.transferContract(contract).wait()
-                tx.signature = [signer.sign(try tx.rawData.serializedData())]
+                let hash = try tx.rawData.serializedData().sha256()
+                tx.signature = [signer.signDigest(hash)!]
                 
                 let response = try provider.broadcastTransaction(tx).wait()
                 guard response.result else {
@@ -36,7 +37,7 @@ public struct TronWeb {
                     return
                 }
                 
-                let txHash = try! tx.rawData.serializedData().sha256().toHexString()
+                let txHash = hash.toHexString()
                 DispatchQueue.main.async {
                     seal.fulfill(txHash)
                 }
@@ -64,7 +65,8 @@ public struct TronWeb {
                     $0.amount = amount
                 }
                 var tx =  try provider.transferAssetContract(contract).wait()
-                tx.signature = [signer.sign(try tx.rawData.serializedData())]
+                let hash = try tx.rawData.serializedData().sha256()
+                tx.signature = [signer.signDigest(hash)!]
                 
                 let response = try provider.broadcastTransaction(tx).wait()
                 guard response.result else {
@@ -75,7 +77,7 @@ public struct TronWeb {
                     return
                 }
                 
-                let txHash = try! tx.rawData.serializedData().sha256().toHexString()
+                let txHash = hash.toHexString()
                 DispatchQueue.main.async {
                     seal.fulfill(txHash)
                 }
@@ -99,8 +101,9 @@ public struct TronWeb {
                 let contract = TronContract_TRC20(contractAddress: contractAddress).transfer(from: signer.address, to: toAddress, value: amount)
                 let txExtension =  try provider.triggerSmartContract(contract).wait()
                 var tx = txExtension.transaction
+                let hash = try tx.rawData.serializedData().sha256()
                 tx.rawData.feeLimit = self.feeLimit
-                tx.signature = [signer.sign(try tx.rawData.serializedData())]
+                tx.signature = [signer.signDigest(hash)!]
                 
                 let response = try provider.broadcastTransaction(tx).wait()
                 guard response.result else {
@@ -111,7 +114,7 @@ public struct TronWeb {
                     return
                 }
 
-                let txHash = try! tx.rawData.serializedData().sha256().toHexString()
+                let txHash = hash.toHexString()
                 DispatchQueue.main.async {
                     seal.fulfill(txHash)
                 }

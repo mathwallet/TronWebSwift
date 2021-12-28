@@ -19,11 +19,13 @@ final class TronWebTests: XCTestCase {
             do {
                 // Block
                 let block = try self.provider.getCurrentBlock().wait()
-                debugPrint(block.blockHeader.rawData.number)
+                debugPrint("BlockNumber: \(block.blockHeader.rawData.number)")
                 
                 // Account
                 let account = try self.provider.getAccount(TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!).wait()
-                debugPrint(account)
+                debugPrint("AccountName: \(String(data: account.accountName, encoding: .utf8) ?? "")")
+                debugPrint("TRX Balance: \(account.balance)")
+                
                 reqeustExpectation.fulfill()
             } catch _ {
                 reqeustExpectation.fulfill()

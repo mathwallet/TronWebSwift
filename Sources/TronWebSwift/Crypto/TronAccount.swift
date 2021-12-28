@@ -31,10 +31,26 @@ public struct TronAccount {
 }
 
 extension TronAccount {
-    func sign(_ data: Data) -> Data {
-        let hash = data.sha256()
+    func signDigest(_ hash: Data) -> Data? {
         let signedData = SECP256K1.signForRecovery(hash: hash, privateKey: privateKey, useExtraVer: false)
-        return signedData.serializedSignature!
+        return signedData.serializedSignature
+    }
+    
+    func signPersonalMessage(_ personalMessage: Data) -> Data? {
+        var prefix = "\u{19}TRON Signed Message:\n"
+        prefix += String(personalMessage.count)
+        
+        guard let prefixData = prefix.data(using: .ascii) else { return nil }
+        
+        var data = Data()
+        if personalMessage.count >= prefixData.count && prefixData == personalMessage[0 ..< prefixData.count] {
+            data.append(personalMessage)
+        } else {
+            data.append(prefixData)
+            data.append(personalMessage)
+        }
+        let hash = data.sha3(.keccak256)
+        return signDigest(hash)
     }
 }
 
