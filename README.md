@@ -1,3 +1,3 @@
 # TronWebSwift
 
-A description of this package.
+Swift API Library for interacting with the TRON Network
