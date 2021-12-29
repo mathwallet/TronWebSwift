@@ -11,6 +11,8 @@ final class TronWebTests: XCTestCase {
     
     func testAddressExample() throws {
         XCTAssertTrue(TronAddress.isValid(string: "TRgioeTKEW31c1D35EHqBe9hnR5Fzwkbks"))
+        XCTAssertTrue(TronAddress.isValid(string: "QXEx2ZL6WkFxsUfLsyx8LvHo4CqYv31kX"))
+
         XCTAssertTrue(signer.address == TronAddress("TRgioeTKEW31c1D35EHqBe9hnR5Fzwkbks"))
     }
     

@@ -37,7 +37,7 @@ public struct TronAddress: CustomStringConvertible {
     public static func isValid(string: String) -> Bool {
         guard let decodeBytes = Base58.base58CheckDecode(string) else { return false }
         
-        return (decodeBytes.count == 1 + TronAddress.size) && (decodeBytes.first == TronAddress.addressPrefix)
+        return TronAddress.isValid(data: Data(decodeBytes))
     }
     
     public static func isValid(data: Data) -> Bool {
