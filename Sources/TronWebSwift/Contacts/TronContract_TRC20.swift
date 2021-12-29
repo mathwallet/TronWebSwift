@@ -18,6 +18,21 @@ public struct TronContract_TRC20 {
     
     // MARK: - Method
     
+    public func balanceOf(owner ownerAddress: TronAddress) -> Protocol_TriggerSmartContract {
+        let functionSelector = "balanceOf(address)"
+        
+        var encodeData = Data()
+        encodeData.append(Data(hex: functionSelector.sha3(.keccak256)).prefix(4))
+        encodeData.append(Data(hex: ownerAddress.data.subdata(in: 1..<ownerAddress.data.count).toHexString().leftPadding(toLength: 64, withPad: "0")))
+        
+        return Protocol_TriggerSmartContract.with {
+            $0.ownerAddress = ownerAddress.data
+            $0.contractAddress = contractAddress.data
+            $0.callValue = 0
+            $0.data = encodeData
+        }
+    }
+    
     public func transfer(from fromAddress: TronAddress, to toAddress: TronAddress, value: BigUInt) -> Protocol_TriggerSmartContract {
         let functionSelector = "transfer(address,uint256)"
         

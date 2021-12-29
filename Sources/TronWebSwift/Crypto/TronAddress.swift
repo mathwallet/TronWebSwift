@@ -34,14 +34,13 @@ public struct TronAddress: CustomStringConvertible {
         self.init(hash)
     }
     
-    static func isValid(string: String) -> Bool {
-        guard string.hasPrefix("T") else { return false }
+    public static func isValid(string: String) -> Bool {
         guard let decodeBytes = Base58.base58CheckDecode(string) else { return false }
         
-        return decodeBytes.count == 1 + TronAddress.size
+        return (decodeBytes.count == 1 + TronAddress.size) && (decodeBytes.first == TronAddress.addressPrefix)
     }
     
-    static func isValid(data: Data) -> Bool {
+    public static func isValid(data: Data) -> Bool {
         guard data.count == 1 + TronAddress.size else { return false }
         return data.bytes[0] == TronAddress.addressPrefix
     }

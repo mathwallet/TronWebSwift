@@ -10,6 +10,7 @@ final class TronWebTests: XCTestCase {
     var tronWeb: TronWeb { return TronWeb(provider: provider) }
     
     func testAddressExample() throws {
+        XCTAssertTrue(TronAddress.isValid(string: "TRgioeTKEW31c1D35EHqBe9hnR5Fzwkbks"))
         XCTAssertTrue(signer.address == TronAddress("TRgioeTKEW31c1D35EHqBe9hnR5Fzwkbks"))
     }
     
@@ -81,6 +82,23 @@ final class TronWebTests: XCTestCase {
         }.catch { error in
             debugPrint(error.localizedDescription)
             reqeustExpectation.fulfill()
+        }
+        wait(for: [reqeustExpectation], timeout: 10)
+    }
+    
+    func testTRC20BalanceOfExample() {
+        let reqeustExpectation = expectation(description: "testReqeust")
+        
+        DispatchQueue.global().async {
+            do {
+                let contract = TronContract_TRC20(contractAddress: TronAddress("TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9")!).balanceOf(owner: TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!)
+                let txExtension =  try self.provider.triggerSmartContract(contract).wait()
+                debugPrint(BigUInt(txExtension.constantResult.first!).description)
+                reqeustExpectation.fulfill()
+            } catch let error {
+                debugPrint(error.localizedDescription)
+                reqeustExpectation.fulfill()
+            }
         }
         wait(for: [reqeustExpectation], timeout: 10)
     }
