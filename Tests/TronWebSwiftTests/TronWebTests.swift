@@ -34,10 +34,17 @@ final class TronWebTests: XCTestCase {
         wait(for: [reqeustExpectation], timeout: 10)
     }
     
+    func testSignMessageExample() throws {
+        guard let signature = signer.signPersonalMessage(Data(hex: "010203")) else {
+            return
+        }
+        debugPrint(signature.toHexString())
+    }
+    
     func testSendTRXExample() throws {
         let reqeustExpectation = expectation(description: "testReqeust")
         tronWeb.sendTRX(to: TronAddress("TVrXFXRHZtJaEWAgr5h5LChCLFWe2WjaiB")!,
-                        amount: 1000,
+                        amount: BigUInt(1000),
                         signer: signer).done { txHash in
             debugPrint("Hash -> \(txHash)")
             reqeustExpectation.fulfill()
@@ -51,7 +58,7 @@ final class TronWebTests: XCTestCase {
     func testSendTRC10Example() throws {
         let reqeustExpectation = expectation(description: "testReqeust")
         tronWeb.sendTRC10(to: TronAddress("TVrXFXRHZtJaEWAgr5h5LChCLFWe2WjaiB")!,
-                          amount: 100000,
+                          amount: BigUInt(100000),
                           assetName: "1004031",
                           signer: signer).done { txHash in
             debugPrint("Hash -> \(txHash)")

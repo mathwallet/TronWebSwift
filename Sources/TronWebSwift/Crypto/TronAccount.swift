@@ -37,8 +37,7 @@ extension TronAccount {
     }
     
     func signPersonalMessage(_ personalMessage: Data) -> Data? {
-        var prefix = "\u{19}TRON Signed Message:\n"
-        prefix += String(personalMessage.count)
+        let prefix = "\u{19}TRON Signed Message:\n32"
         
         guard let prefixData = prefix.data(using: .ascii) else { return nil }
         
