@@ -7,15 +7,10 @@
 
 import Foundation
 
-public extension Protocol_Transaction.raw {
-    func decode() throws -> String? {
-        guard let contract = self.contract.first else {
-            debugPrint(Protocol_Transaction.Contract.ContractType.UNRECOGNIZED(-1))
-            return nil
-        }
-        let type = contract.type
-        let data = contract.parameter.value
-        switch type {
+public extension Protocol_Transaction.Contract {
+    func decodeJsonString() throws -> String? {
+        let data = self.parameter.value
+        switch self.type {
         case .accountCreateContract:
             return try Protocol_AccountCreateContract(serializedData: data).jsonString()
         case .transferContract:
