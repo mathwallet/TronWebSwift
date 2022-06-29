@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "Base58Swift",
-        "repositoryURL": "https://github.com/mathwallet/Base58Swift.git",
-        "state": {
-          "branch": "master",
-          "revision": "916940466f7e149b4029832ba5521252d7d68d92",
-          "version": null
-        }
-      },
-      {
         "package": "BigInt",
         "repositoryURL": "https://github.com/attaswift/BigInt.git",
         "state": {

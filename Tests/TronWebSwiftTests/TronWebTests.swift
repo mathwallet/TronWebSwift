@@ -11,9 +11,11 @@ final class TronWebTests: XCTestCase {
     
     func testAddressExample() throws {
         XCTAssertTrue(TronAddress.isValid(string: "TRgioeTKEW31c1D35EHqBe9hnR5Fzwkbks"))
-        XCTAssertTrue(TronAddress.isValid(string: "QXEx2ZL6WkFxsUfLsyx8LvHo4CqYv31kX"))
+        XCTAssertTrue(TronAddress.isValid(string: "QXEx2ZL6WkFxsUfLsyx8LvHo4CqYv31kX") == false)
 
         XCTAssertTrue(signer.address == TronAddress("TRgioeTKEW31c1D35EHqBe9hnR5Fzwkbks"))
+        
+        XCTAssertTrue(TronAddress(Data(hex: "41E17813C29A72D0F706D3D1BDF47D5B8181E3FB67")) == TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2"))
     }
     
     func testProviderExample() throws {

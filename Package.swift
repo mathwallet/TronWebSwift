@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "TronWebSwift",
+    platforms: [
+        .iOS("10.0")
+    ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -17,8 +20,7 @@ let package = Package(
          .package(url: "https://github.com/grpc/grpc-swift", from: "1.6.1"),
          .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.4.2"),
          .package(url: "https://github.com/mathwallet/Secp256k1Swift.git", from: "1.2.6"),
-         .package(url: "https://github.com/mxcl/PromiseKit.git", from: "6.16.2"),
-         .package(url: "https://github.com/mathwallet/Base58Swift.git", branch: "master")
+         .package(url: "https://github.com/mxcl/PromiseKit.git", from: "6.16.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -29,9 +31,10 @@ let package = Package(
                 .product(name: "SwiftProtobuf", package: "swift-protobuf"),
                 .product(name: "GRPC", package: "grpc-swift"),
                 "CryptoSwift",
-                "Secp256k1Swift",
-                "PromiseKit",
-                "Base58Swift"]
+                .product(name: "Secp256k1Swift", package: "Secp256k1Swift"),
+                .product(name: "BIP32Swift", package: "Secp256k1Swift"),
+                "PromiseKit"
+            ]
         ),
         .testTarget(
             name: "TronWebSwiftTests",

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Base58Swift
+import BIP32Swift
 import CryptoSwift
 
 public struct TronAddress: CustomStringConvertible {
@@ -20,13 +20,13 @@ public struct TronAddress: CustomStringConvertible {
         guard TronAddress.isValid(data: data) else { return nil }
         
         self.data = data
-        self.address = Base58.base58CheckEncode(data.bytes)
+        self.address = data.bytes.base58CheckEncodedString
     }
     
     public init?(_ string: String) {
-        guard let decodeBytes = Base58.base58CheckDecode(string) else { return nil }
+        guard let decodeData = string.base58CheckDecodedData else { return nil }
         
-        self.init(Data(decodeBytes))
+        self.init(decodeData)
     }
     
     public init?(publicKey: Data) {
@@ -35,9 +35,9 @@ public struct TronAddress: CustomStringConvertible {
     }
     
     public static func isValid(string: String) -> Bool {
-        guard let decodeBytes = Base58.base58CheckDecode(string) else { return false }
+        guard let decodeData = string.base58CheckDecodedData else { return false }
         
-        return TronAddress.isValid(data: Data(decodeBytes))
+        return TronAddress.isValid(data: decodeData)
     }
     
     public static func isValid(data: Data) -> Bool {
