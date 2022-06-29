@@ -9,7 +9,7 @@ import Foundation
 import BigInt
 import CryptoSwift
 
-public struct TronContract_TRC20 {
+public struct TRC20 {
     public let contractAddress: TronAddress
     
     public init(contractAddress: TronAddress) {

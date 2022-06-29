@@ -28,6 +28,8 @@ final class TronWebTests: XCTestCase {
                 let account = try self.provider.getAccount(TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!).wait()
                 debugPrint("AccountName: \(String(data: account.accountName, encoding: .utf8) ?? "")")
                 debugPrint("TRX Balance: \(account.balance)")
+//                debugPrint("Account Asset: \(account.asset)")
+                debugPrint("Account Asset2: \(account.assetV2)")
                 
                 reqeustExpectation.fulfill()
             } catch _ {
@@ -93,7 +95,7 @@ final class TronWebTests: XCTestCase {
         
         DispatchQueue.global().async {
             do {
-                let contract = TronContract_TRC20(contractAddress: TronAddress("TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9")!).balanceOf(owner: TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!)
+                let contract = TRC20(contractAddress: TronAddress("TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9")!).balanceOf(owner: TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!)
                 let txExtension =  try self.provider.triggerSmartContract(contract).wait()
                 debugPrint(BigUInt(txExtension.constantResult.first!).description)
                 reqeustExpectation.fulfill()
@@ -105,7 +107,7 @@ final class TronWebTests: XCTestCase {
         wait(for: [reqeustExpectation], timeout: 10)
     }
     
-    func testRawDataExample() {
+    func testRawDataExample() throws {
         // TxID -> sha256(rawData)
         // c9c03a70a777900b32cbac5ffadddce5d17867494fdc8f4332aef34ea97448c5
         let rawData = Data(hex: "0a0294cb2208142b7e076262aa7b40e88cb7a2e02f5aae01081f12a9010a31747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e54726967676572536d617274436f6e747261637412740a1541e17813c29a72d0f706d3d1bdf47d5b8181e3fb671215413dfe637b2b9ae4190a458b5f3efc1969afe278192244095ea7b30000000000000000000000006e0617948fe030a7e4970f8389d4ad295f249b7effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff70d3beb3a2e02f900180c2d72f")
@@ -113,7 +115,6 @@ final class TronWebTests: XCTestCase {
         let tx = Protocol_Transaction.with {
             $0.rawData = try! Protocol_Transaction.raw(serializedData: rawData)
         }
-        
         XCTAssertTrue(rawData == (try? tx.rawData.serializedData()))
         
     }

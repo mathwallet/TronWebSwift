@@ -25,18 +25,18 @@ public struct TronAccount {
         self.publicKey = publicKey
     }
     
-    static func isValidPrivateKey(_ privateKey: Data) -> Bool{
+    public static func isValidPrivateKey(_ privateKey: Data) -> Bool{
         return SECP256K1.verifyPrivateKey(privateKey: privateKey)
     }
 }
 
 extension TronAccount {
-    func signDigest(_ hash: Data) -> Data? {
+    public func signDigest(_ hash: Data) -> Data? {
         let signedData = SECP256K1.signForRecovery(hash: hash, privateKey: privateKey, useExtraVer: false)
         return signedData.serializedSignature
     }
     
-    func signPersonalMessage(_ personalMessage: Data) -> Data? {
+    public func signPersonalMessage(_ personalMessage: Data) -> Data? {
         let prefix = "\u{19}TRON Signed Message:\n32"
         
         guard let prefixData = prefix.data(using: .ascii) else { return nil }
@@ -54,10 +54,10 @@ extension TronAccount {
 }
 
 extension TronAccount {
-    enum Error: String, LocalizedError {
+    public enum Error: String, LocalizedError {
         case invalidPrivateKey
         
-        var errorDescription: String? {
+        public var errorDescription: String? {
             return "TronWeb.Account.Error.\(rawValue)"
         }
     }

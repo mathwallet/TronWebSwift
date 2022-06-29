@@ -2,6 +2,11 @@ import Foundation
 import PromiseKit
 import BigInt
 
+typealias TronTransaction = Protocol_Transaction
+typealias TronTransferContract = Protocol_TransferContract
+typealias TronTransferAssetContract = Protocol_TransferAssetContract
+typealias TronTriggerSmartContract = Protocol_TriggerSmartContract
+
 public struct TronWeb {
     let provider: TronGRPCProvider
     var feeLimit = BigUInt(150000000)
@@ -96,11 +101,11 @@ public struct TronWeb {
         let (promise, seal) = Promise<String>.pending()
         DispatchQueue.global().async {
             do {
-                let contract = TronContract_TRC20(contractAddress: contractAddress).transfer(from: signer.address, to: toAddress, value: amount)
+                let contract = TRC20(contractAddress: contractAddress).transfer(from: signer.address, to: toAddress, value: amount)
                 let txExtension =  try provider.triggerSmartContract(contract).wait()
                 var tx = txExtension.transaction
-                let hash = try tx.rawData.serializedData().sha256()
                 tx.rawData.feeLimit = Int64(self.feeLimit.description)!
+                let hash = try tx.rawData.serializedData().sha256()
                 tx.signature = [signer.signDigest(hash)!]
                 
                 let response = try provider.broadcastTransaction(tx).wait()
