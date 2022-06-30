@@ -99,6 +99,12 @@ extension Protocol_ZksnarkResponse.Code: CaseIterable {
 
 #endif  // swift(>=4.2)
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_ZksnarkRequest: @unchecked Sendable {}
+extension Protocol_ZksnarkResponse: @unchecked Sendable {}
+extension Protocol_ZksnarkResponse.Code: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

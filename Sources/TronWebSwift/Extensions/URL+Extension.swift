@@ -19,7 +19,7 @@ extension URL {
         return urlComponents.url!
     }
     
-    public func appending(_ type: TronWebRPCType) -> URL {
-        return self.appendingPathComponent(TronWebRPCType.getAccount.path)
+    public func appending(_ type: TronWebRequestType) -> URL {
+        return self.appendingPathComponent(type.path)
     }
 }

@@ -160,6 +160,15 @@ public struct Protocol_BackupMessage {
   public init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_Endpoint: @unchecked Sendable {}
+extension Protocol_PingMessage: @unchecked Sendable {}
+extension Protocol_PongMessage: @unchecked Sendable {}
+extension Protocol_FindNeighbours: @unchecked Sendable {}
+extension Protocol_Neighbours: @unchecked Sendable {}
+extension Protocol_BackupMessage: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

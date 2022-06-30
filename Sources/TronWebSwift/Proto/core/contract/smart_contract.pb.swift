@@ -342,6 +342,21 @@ public struct Protocol_SmartContractDataWrapper {
   fileprivate var _smartContract: Protocol_SmartContract? = nil
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_SmartContract: @unchecked Sendable {}
+extension Protocol_SmartContract.ABI: @unchecked Sendable {}
+extension Protocol_SmartContract.ABI.Entry: @unchecked Sendable {}
+extension Protocol_SmartContract.ABI.Entry.EntryType: @unchecked Sendable {}
+extension Protocol_SmartContract.ABI.Entry.StateMutabilityType: @unchecked Sendable {}
+extension Protocol_SmartContract.ABI.Entry.Param: @unchecked Sendable {}
+extension Protocol_CreateSmartContract: @unchecked Sendable {}
+extension Protocol_TriggerSmartContract: @unchecked Sendable {}
+extension Protocol_ClearABIContract: @unchecked Sendable {}
+extension Protocol_UpdateSettingContract: @unchecked Sendable {}
+extension Protocol_UpdateEnergyLimitContract: @unchecked Sendable {}
+extension Protocol_SmartContractDataWrapper: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

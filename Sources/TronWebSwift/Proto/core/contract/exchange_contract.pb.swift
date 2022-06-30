@@ -96,6 +96,13 @@ public struct Protocol_ExchangeTransactionContract {
   public init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_ExchangeCreateContract: @unchecked Sendable {}
+extension Protocol_ExchangeInjectContract: @unchecked Sendable {}
+extension Protocol_ExchangeWithdrawContract: @unchecked Sendable {}
+extension Protocol_ExchangeTransactionContract: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

@@ -118,6 +118,13 @@ public struct Protocol_AccountPermissionUpdateContract {
   fileprivate var _witness: Protocol_Permission? = nil
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_AccountCreateContract: @unchecked Sendable {}
+extension Protocol_AccountUpdateContract: @unchecked Sendable {}
+extension Protocol_SetAccountIdContract: @unchecked Sendable {}
+extension Protocol_AccountPermissionUpdateContract: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

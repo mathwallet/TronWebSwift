@@ -259,6 +259,20 @@ public struct Protocol_ShieldedTransferContract {
   public init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_AuthenticationPath: @unchecked Sendable {}
+extension Protocol_MerklePath: @unchecked Sendable {}
+extension Protocol_OutputPoint: @unchecked Sendable {}
+extension Protocol_OutputPointInfo: @unchecked Sendable {}
+extension Protocol_PedersenHash: @unchecked Sendable {}
+extension Protocol_IncrementalMerkleTree: @unchecked Sendable {}
+extension Protocol_IncrementalMerkleVoucher: @unchecked Sendable {}
+extension Protocol_IncrementalMerkleVoucherInfo: @unchecked Sendable {}
+extension Protocol_SpendDescription: @unchecked Sendable {}
+extension Protocol_ReceiveDescription: @unchecked Sendable {}
+extension Protocol_ShieldedTransferContract: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

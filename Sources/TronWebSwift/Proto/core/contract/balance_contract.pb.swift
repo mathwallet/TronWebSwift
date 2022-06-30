@@ -238,6 +238,21 @@ public struct Protocol_AccountBalanceResponse {
   fileprivate var _blockIdentifier: Protocol_BlockBalanceTrace.BlockIdentifier? = nil
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_FreezeBalanceContract: @unchecked Sendable {}
+extension Protocol_UnfreezeBalanceContract: @unchecked Sendable {}
+extension Protocol_WithdrawBalanceContract: @unchecked Sendable {}
+extension Protocol_TransferContract: @unchecked Sendable {}
+extension Protocol_TransactionBalanceTrace: @unchecked Sendable {}
+extension Protocol_TransactionBalanceTrace.Operation: @unchecked Sendable {}
+extension Protocol_BlockBalanceTrace: @unchecked Sendable {}
+extension Protocol_BlockBalanceTrace.BlockIdentifier: @unchecked Sendable {}
+extension Protocol_AccountTrace: @unchecked Sendable {}
+extension Protocol_AccountIdentifier: @unchecked Sendable {}
+extension Protocol_AccountBalanceRequest: @unchecked Sendable {}
+extension Protocol_AccountBalanceResponse: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

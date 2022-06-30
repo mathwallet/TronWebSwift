@@ -78,6 +78,13 @@ public struct Protocol_VoteWitnessContract {
   public init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_WitnessCreateContract: @unchecked Sendable {}
+extension Protocol_WitnessUpdateContract: @unchecked Sendable {}
+extension Protocol_VoteWitnessContract: @unchecked Sendable {}
+extension Protocol_VoteWitnessContract.Vote: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

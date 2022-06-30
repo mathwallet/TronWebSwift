@@ -18,21 +18,6 @@ final class TronWebTests: XCTestCase {
         XCTAssertTrue(TronAddress(Data(hex: "41E17813C29A72D0F706D3D1BDF47D5B8181E3FB67")) == TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2"))
     }
     
-    func testRPCProviderExample() throws {
-        let reqeustExpectation = expectation(description: "testReqeust")
-        let provider = TronWebHttpProvider(URL(string: "https://tron.maiziqianbao.net")!)!
-        
-        let address = TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!
-        provider.getAccount(address).done { (resp: GetAccountResponse) in
-            debugPrint(resp)
-            reqeustExpectation.fulfill()
-        }.catch { error in
-            debugPrint(error.localizedDescription)
-            reqeustExpectation.fulfill()
-        }
-        wait(for: [reqeustExpectation], timeout: 10)
-    }
-    
     func testProviderExample() throws {
         let reqeustExpectation = expectation(description: "testReqeust")
         DispatchQueue.global().async {
@@ -48,12 +33,14 @@ final class TronWebTests: XCTestCase {
                 // Account
                 let account = try self.provider.getAccount(TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!).wait()
                 debugPrint("AccountName: \(String(data: account.accountName, encoding: .utf8) ?? "")")
+                debugPrint("Address: \(account.address.toHexString())")
                 debugPrint("TRX Balance: \(account.balance)")
 //                debugPrint("Account Asset: \(account.asset)")
                 debugPrint("Account Asset2: \(account.assetV2)")
                 
                 reqeustExpectation.fulfill()
-            } catch _ {
+            } catch let error {
+                debugPrint(error)
                 reqeustExpectation.fulfill()
             }
         }

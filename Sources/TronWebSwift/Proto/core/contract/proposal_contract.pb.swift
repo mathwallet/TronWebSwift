@@ -65,6 +65,12 @@ public struct Protocol_ProposalDeleteContract {
   public init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_ProposalApproveContract: @unchecked Sendable {}
+extension Protocol_ProposalCreateContract: @unchecked Sendable {}
+extension Protocol_ProposalDeleteContract: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

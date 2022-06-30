@@ -79,6 +79,13 @@ public struct Protocol_UpdateBrokerageContract {
   public init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_BuyStorageBytesContract: @unchecked Sendable {}
+extension Protocol_BuyStorageContract: @unchecked Sendable {}
+extension Protocol_SellStorageContract: @unchecked Sendable {}
+extension Protocol_UpdateBrokerageContract: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

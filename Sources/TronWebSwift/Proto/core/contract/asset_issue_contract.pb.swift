@@ -213,6 +213,15 @@ public struct Protocol_ParticipateAssetIssueContract {
   public init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_AssetIssueContract: @unchecked Sendable {}
+extension Protocol_AssetIssueContract.FrozenSupply: @unchecked Sendable {}
+extension Protocol_TransferAssetContract: @unchecked Sendable {}
+extension Protocol_UnfreezeAssetContract: @unchecked Sendable {}
+extension Protocol_UpdateAssetContract: @unchecked Sendable {}
+extension Protocol_ParticipateAssetIssueContract: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"

@@ -1810,6 +1810,87 @@ public struct Protocol_ShieldedTRC20TriggerContractParameters {
   fileprivate var _shieldedTrc20Parameters: Protocol_ShieldedTRC20Parameters? = nil
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Protocol_Return: @unchecked Sendable {}
+extension Protocol_Return.response_code: @unchecked Sendable {}
+extension Protocol_BlockReference: @unchecked Sendable {}
+extension Protocol_WitnessList: @unchecked Sendable {}
+extension Protocol_ProposalList: @unchecked Sendable {}
+extension Protocol_ExchangeList: @unchecked Sendable {}
+extension Protocol_AssetIssueList: @unchecked Sendable {}
+extension Protocol_BlockList: @unchecked Sendable {}
+extension Protocol_TransactionList: @unchecked Sendable {}
+extension Protocol_TransactionIdList: @unchecked Sendable {}
+extension Protocol_DelegatedResourceMessage: @unchecked Sendable {}
+extension Protocol_DelegatedResourceList: @unchecked Sendable {}
+extension Protocol_NodeList: @unchecked Sendable {}
+extension Protocol_Node: @unchecked Sendable {}
+extension Protocol_Address: @unchecked Sendable {}
+extension Protocol_EmptyMessage: @unchecked Sendable {}
+extension Protocol_NumberMessage: @unchecked Sendable {}
+extension Protocol_BytesMessage: @unchecked Sendable {}
+extension Protocol_TimeMessage: @unchecked Sendable {}
+extension Protocol_BlockLimit: @unchecked Sendable {}
+extension Protocol_TransactionLimit: @unchecked Sendable {}
+extension Protocol_AccountPaginated: @unchecked Sendable {}
+extension Protocol_TimePaginatedMessage: @unchecked Sendable {}
+extension Protocol_AccountNetMessage: @unchecked Sendable {}
+extension Protocol_AccountResourceMessage: @unchecked Sendable {}
+extension Protocol_PaginatedMessage: @unchecked Sendable {}
+extension Protocol_EasyTransferMessage: @unchecked Sendable {}
+extension Protocol_EasyTransferAssetMessage: @unchecked Sendable {}
+extension Protocol_EasyTransferByPrivateMessage: @unchecked Sendable {}
+extension Protocol_EasyTransferAssetByPrivateMessage: @unchecked Sendable {}
+extension Protocol_EasyTransferResponse: @unchecked Sendable {}
+extension Protocol_AddressPrKeyPairMessage: @unchecked Sendable {}
+extension Protocol_TransactionExtention: @unchecked Sendable {}
+extension Protocol_BlockExtention: @unchecked Sendable {}
+extension Protocol_BlockListExtention: @unchecked Sendable {}
+extension Protocol_TransactionListExtention: @unchecked Sendable {}
+extension Protocol_BlockIncrementalMerkleTree: @unchecked Sendable {}
+extension Protocol_TransactionSignWeight: @unchecked Sendable {}
+extension Protocol_TransactionSignWeight.Result: @unchecked Sendable {}
+extension Protocol_TransactionSignWeight.Result.response_code: @unchecked Sendable {}
+extension Protocol_TransactionApprovedList: @unchecked Sendable {}
+extension Protocol_TransactionApprovedList.Result: @unchecked Sendable {}
+extension Protocol_TransactionApprovedList.Result.response_code: @unchecked Sendable {}
+extension Protocol_IvkDecryptParameters: @unchecked Sendable {}
+extension Protocol_IvkDecryptAndMarkParameters: @unchecked Sendable {}
+extension Protocol_OvkDecryptParameters: @unchecked Sendable {}
+extension Protocol_DecryptNotes: @unchecked Sendable {}
+extension Protocol_DecryptNotes.NoteTx: @unchecked Sendable {}
+extension Protocol_DecryptNotesMarked: @unchecked Sendable {}
+extension Protocol_DecryptNotesMarked.NoteTx: @unchecked Sendable {}
+extension Protocol_Note: @unchecked Sendable {}
+extension Protocol_SpendNote: @unchecked Sendable {}
+extension Protocol_ReceiveNote: @unchecked Sendable {}
+extension Protocol_PrivateParameters: @unchecked Sendable {}
+extension Protocol_PrivateParametersWithoutAsk: @unchecked Sendable {}
+extension Protocol_SpendAuthSigParameters: @unchecked Sendable {}
+extension Protocol_NfParameters: @unchecked Sendable {}
+extension Protocol_ExpandedSpendingKeyMessage: @unchecked Sendable {}
+extension Protocol_ViewingKeyMessage: @unchecked Sendable {}
+extension Protocol_IncomingViewingKeyMessage: @unchecked Sendable {}
+extension Protocol_DiversifierMessage: @unchecked Sendable {}
+extension Protocol_IncomingViewingKeyDiversifierMessage: @unchecked Sendable {}
+extension Protocol_PaymentAddressMessage: @unchecked Sendable {}
+extension Protocol_ShieldedAddressInfo: @unchecked Sendable {}
+extension Protocol_NoteParameters: @unchecked Sendable {}
+extension Protocol_SpendResult: @unchecked Sendable {}
+extension Protocol_TransactionInfoList: @unchecked Sendable {}
+extension Protocol_SpendNoteTRC20: @unchecked Sendable {}
+extension Protocol_PrivateShieldedTRC20Parameters: @unchecked Sendable {}
+extension Protocol_PrivateShieldedTRC20ParametersWithoutAsk: @unchecked Sendable {}
+extension Protocol_ShieldedTRC20Parameters: @unchecked Sendable {}
+extension Protocol_IvkDecryptTRC20Parameters: @unchecked Sendable {}
+extension Protocol_OvkDecryptTRC20Parameters: @unchecked Sendable {}
+extension Protocol_DecryptNotesTRC20: @unchecked Sendable {}
+extension Protocol_DecryptNotesTRC20.NoteTx: @unchecked Sendable {}
+extension Protocol_NfTRC20Parameters: @unchecked Sendable {}
+extension Protocol_NullifierResult: @unchecked Sendable {}
+extension Protocol_ShieldedTRC20TriggerContractParameters: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "protocol"
