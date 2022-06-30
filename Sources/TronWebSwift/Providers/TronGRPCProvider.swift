@@ -25,6 +25,10 @@ public struct TronGRPCProvider {
     
     // MARK: - Query
     
+    public func getNodeInfo() -> EventLoopFuture<Protocol_NodeInfo> {
+        return wallet.getNodeInfo(Protocol_EmptyMessage()).response
+    }
+    
     public func getCurrentBlock() -> EventLoopFuture<Protocol_Block> {
         return wallet.getNowBlock(Protocol_EmptyMessage()).response
     }

@@ -6,7 +6,7 @@ import BigInt
 
 final class TronWebTests: XCTestCase {
     let provider = TronGRPCProvider(host: "tronfull.maiziqianbao.net", port: 80)
-    let signer = try! TronAccount(privateKey: Data(hex: "4705824132a933e466df987395d398ff31603fc0e08b447a7be1fce841ce21c9"))
+    let signer = try! TronSigner(privateKey: Data(hex: "4705824132a933e466df987395d398ff31603fc0e08b447a7be1fce841ce21c9"))
     var tronWeb: TronWeb { return TronWeb(provider: provider) }
     
     func testAddressExample() throws {
@@ -18,10 +18,29 @@ final class TronWebTests: XCTestCase {
         XCTAssertTrue(TronAddress(Data(hex: "41E17813C29A72D0F706D3D1BDF47D5B8181E3FB67")) == TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2"))
     }
     
+    func testRPCProviderExample() throws {
+        let reqeustExpectation = expectation(description: "testReqeust")
+        let provider = TronWebHttpProvider(URL(string: "https://tron.maiziqianbao.net")!)!
+        
+        let address = TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!
+        provider.getAccount(address).done { (resp: GetAccountResponse) in
+            debugPrint(resp)
+            reqeustExpectation.fulfill()
+        }.catch { error in
+            debugPrint(error.localizedDescription)
+            reqeustExpectation.fulfill()
+        }
+        wait(for: [reqeustExpectation], timeout: 10)
+    }
+    
     func testProviderExample() throws {
         let reqeustExpectation = expectation(description: "testReqeust")
         DispatchQueue.global().async {
             do {
+                // NodeInfo
+                let nodeInfo = try self.provider.getNodeInfo().wait()
+                debugPrint("NodeInfo: \(try nodeInfo.jsonString())")
+                
                 // Block
                 let block = try self.provider.getCurrentBlock().wait()
                 debugPrint("BlockNumber: \(block.blockHeader.rawData.number)")

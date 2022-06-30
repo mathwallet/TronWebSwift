@@ -7,6 +7,27 @@ typealias TronTransferContract = Protocol_TransferContract
 typealias TronTransferAssetContract = Protocol_TransferAssetContract
 typealias TronTriggerSmartContract = Protocol_TriggerSmartContract
 
+
+public enum TronWebError: LocalizedError {
+    case invalidProvider
+    case nodeError(desc:String)
+    case processingError(desc:String)
+    case unknown(message: String)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .invalidProvider:
+            return "TronWeb.Error.invalidProvider"
+        case .nodeError(let desc):
+            return desc
+        case .processingError(let desc):
+            return desc
+        case .unknown(let message):
+            return message
+        }
+    }
+}
+    
 public struct TronWeb {
     let provider: TronGRPCProvider
     var feeLimit = BigUInt(150000000)
@@ -20,7 +41,7 @@ public struct TronWeb {
     
     public func sendTRX(to toAddress: TronAddress,
                         amount: BigUInt,
-                        signer: TronAccount) -> Promise<String> {
+                        signer: TronSigner) -> Promise<String> {
         let (promise, seal) = Promise<String>.pending()
         DispatchQueue.global().async {
             do {
@@ -37,7 +58,7 @@ public struct TronWeb {
                 guard response.result else {
                     let errMessage = String(data: response.message, encoding: .utf8) ?? ""
                     DispatchQueue.main.async {
-                        seal.reject(Error.unknown(message: errMessage))
+                        seal.reject(TronWebError.unknown(message: errMessage))
                     }
                     return
                 }
@@ -58,7 +79,7 @@ public struct TronWeb {
     public func sendTRC10(to toAddress: TronAddress,
                           amount: BigUInt,
                           assetName: String,
-                          signer: TronAccount) -> Promise<String> {
+                          signer: TronSigner) -> Promise<String> {
         let (promise, seal) = Promise<String>.pending()
         DispatchQueue.global().async {
             do {
@@ -76,7 +97,7 @@ public struct TronWeb {
                 guard response.result else {
                     let errMessage = String(data: response.message, encoding: .utf8) ?? ""
                     DispatchQueue.main.async {
-                        seal.reject(Error.unknown(message: errMessage))
+                        seal.reject(TronWebError.unknown(message: errMessage))
                     }
                     return
                 }
@@ -97,7 +118,7 @@ public struct TronWeb {
     public func sendTRC20(to toAddress: TronAddress,
                           contract contractAddress: TronAddress,
                           amount: BigUInt,
-                          signer: TronAccount) -> Promise<String> {
+                          signer: TronSigner) -> Promise<String> {
         let (promise, seal) = Promise<String>.pending()
         DispatchQueue.global().async {
             do {
@@ -112,7 +133,7 @@ public struct TronWeb {
                 guard response.result else {
                     let errMessage = String(data: response.message, encoding: .utf8) ?? ""
                     DispatchQueue.main.async {
-                        seal.reject(Error.unknown(message: errMessage))
+                        seal.reject(TronWebError.unknown(message: errMessage))
                     }
                     return
                 }

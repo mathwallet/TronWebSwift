@@ -1,5 +1,5 @@
 //
-//  TronAccount.swift
+//  TronSigner.swift
 //  
 //
 //  Created by math on 2021/12/27.
@@ -8,7 +8,7 @@
 import Foundation
 import Secp256k1Swift
 
-public struct TronAccount {
+public struct TronSigner {
     public var privateKey: Data
     public var publicKey: Data
     
@@ -17,7 +17,7 @@ public struct TronAccount {
     }
     
     init(privateKey: Data) throws {
-        guard TronAccount.isValidPrivateKey(privateKey), let publicKey = SECP256K1.privateToPublic(privateKey: privateKey, compressed: false) else {
+        guard TronSigner.isValidPrivateKey(privateKey), let publicKey = SECP256K1.privateToPublic(privateKey: privateKey, compressed: false) else {
             throw Error.invalidPrivateKey
         }
         
@@ -30,7 +30,7 @@ public struct TronAccount {
     }
 }
 
-extension TronAccount {
+extension TronSigner {
     public func signDigest(_ hash: Data) -> Data? {
         let signedData = SECP256K1.signForRecovery(hash: hash, privateKey: privateKey, useExtraVer: false)
         return signedData.serializedSignature
@@ -53,12 +53,12 @@ extension TronAccount {
     }
 }
 
-extension TronAccount {
+extension TronSigner {
     public enum Error: String, LocalizedError {
         case invalidPrivateKey
         
         public var errorDescription: String? {
-            return "TronWeb.Account.Error.\(rawValue)"
+            return "TronWeb.Signer.Error.\(rawValue)"
         }
     }
 }
