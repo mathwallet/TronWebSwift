@@ -121,8 +121,8 @@ public struct TronWeb {
         let (promise, seal) = Promise<String>.pending()
         DispatchQueue.global().async {
             do {
-                let contract = TRC20(contractAddress: contractAddress).transfer(from: signer.address, to: toAddress, value: amount)
-                let txExtension =  try provider.triggerSmartContract(contract, functionSelector: "transfer(address)",feeLimit: self.feeLimit).wait()
+                let (contract, selector) = TRC20(contractAddress: contractAddress).transfer(from: signer.address, to: toAddress, value: amount)
+                let txExtension =  try provider.triggerSmartContract(contract, functionSelector: selector,feeLimit: self.feeLimit).wait()
                 var tx = txExtension.transaction
                 tx.rawData.feeLimit = Int64(self.feeLimit.description)!
                 let hash = try tx.rawData.serializedData().sha256()
