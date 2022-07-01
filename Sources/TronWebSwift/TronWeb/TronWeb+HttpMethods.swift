@@ -31,7 +31,7 @@ public enum TronWebRequestType: String {
         case .triggerConstantContract:
             return "/wallet/triggerconstantcontract"
         case .broadcastTransaction:
-            return "/wallet/broadcasttransaction"
+            return "/wallet/broadcasthex"
         }
     }
 }
@@ -171,7 +171,7 @@ extension Protocol_Return: Decodable {
         if let rawValue = try? container.decodeIfPresent(Bool.self, forKey: .result) {
             self.result = rawValue
         }
-        if let rawValue = try? container.decodeIfPresent(String.self, forKey: .code) {
+        if let rawValue = try? container.decodeIfPresent(String.self, forKey: .code), rawValue.lowercased() != "success" {
             self.code = .otherError
         }
         if let rawValue = try? container.decodeIfPresent(String.self, forKey: .message) {

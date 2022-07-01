@@ -5,7 +5,7 @@ import BigInt
 @testable import TronWebSwift
 
 final class TronWebTests: XCTestCase {
-    let provider = TronGRPCProvider(host: "tronfull.maiziqianbao.net", port: 80)
+    let provider = TronWebHttpProvider(URL(string: "https://tron.maiziqianbao.net")!)!
     let signer = try! TronSigner(privateKey: Data(hex: "4705824132a933e466df987395d398ff31603fc0e08b447a7be1fce841ce21c9"))
     var tronWeb: TronWeb { return TronWeb(provider: provider) }
     
@@ -22,12 +22,8 @@ final class TronWebTests: XCTestCase {
         let reqeustExpectation = expectation(description: "testReqeust")
         DispatchQueue.global().async {
             do {
-                // NodeInfo
-                let nodeInfo = try self.provider.getNodeInfo().wait()
-                debugPrint("NodeInfo: \(try nodeInfo.jsonString())")
-                
                 // Block
-                let block = try self.provider.getCurrentBlock().wait()
+                let block = try self.provider.getNowBlock().wait()
                 debugPrint("BlockNumber: \(block.blockHeader.rawData.number)")
                 
                 // Account
@@ -35,7 +31,7 @@ final class TronWebTests: XCTestCase {
                 debugPrint("AccountName: \(String(data: account.accountName, encoding: .utf8) ?? "")")
                 debugPrint("Address: \(account.address.toHexString())")
                 debugPrint("TRX Balance: \(account.balance)")
-//                debugPrint("Account Asset: \(account.asset)")
+                debugPrint("Account Asset: \(account.asset)")
                 debugPrint("Account Asset2: \(account.assetV2)")
                 
                 reqeustExpectation.fulfill()
@@ -57,7 +53,7 @@ final class TronWebTests: XCTestCase {
     func testSendTRXExample() throws {
         let reqeustExpectation = expectation(description: "testReqeust")
         tronWeb.sendTRX(to: TronAddress("TVrXFXRHZtJaEWAgr5h5LChCLFWe2WjaiB")!,
-                        amount: BigUInt(1000),
+                        amount: BigUInt(100000),
                         signer: signer).done { txHash in
             debugPrint("Hash -> \(txHash)")
             reqeustExpectation.fulfill()
@@ -104,7 +100,7 @@ final class TronWebTests: XCTestCase {
         DispatchQueue.global().async {
             do {
                 let contract = TRC20(contractAddress: TronAddress("TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9")!).balanceOf(owner: TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!)
-                let txExtension =  try self.provider.triggerSmartContract(contract).wait()
+                let txExtension =  try self.provider.triggerConstantContract(contract, functionSelector: "balanceOf(address)").wait()
                 debugPrint(BigUInt(txExtension.constantResult.first!).description)
                 reqeustExpectation.fulfill()
             } catch let error {

@@ -7,7 +7,6 @@ typealias TronTransferContract = Protocol_TransferContract
 typealias TronTransferAssetContract = Protocol_TransferAssetContract
 typealias TronTriggerSmartContract = Protocol_TriggerSmartContract
 
-
 public enum TronWebError: LocalizedError {
     case invalidProvider
     case nodeError(desc:String)
@@ -29,10 +28,10 @@ public enum TronWebError: LocalizedError {
 }
     
 public struct TronWeb {
-    let provider: TronGRPCProvider
-    var feeLimit = BigUInt(150000000)
+    let provider: TronWebHttpProvider
+    let feeLimit: Int64
     
-    public init(provider: TronGRPCProvider, feeLimit: BigUInt = BigUInt(150000000)) {
+    public init(provider: TronWebHttpProvider, feeLimit: Int64 = 150000000) {
         self.provider = provider
         self.feeLimit = feeLimit
     }
@@ -50,7 +49,7 @@ public struct TronWeb {
                     $0.toAddress = toAddress.data
                     $0.amount = Int64(amount.description)!
                 }
-                var tx =  try provider.transferContract(contract).wait()
+                var tx =  try provider.createTransaction(contract).wait()
                 let hash = try tx.rawData.serializedData().sha256()
                 tx.signature = [signer.signDigest(hash)!]
                 
@@ -89,7 +88,7 @@ public struct TronWeb {
                     $0.toAddress = toAddress.data
                     $0.amount = Int64(amount.description)!
                 }
-                var tx =  try provider.transferAssetContract(contract).wait()
+                var tx =  try provider.transferAsset(contract).wait()
                 let hash = try tx.rawData.serializedData().sha256()
                 tx.signature = [signer.signDigest(hash)!]
                 
@@ -123,7 +122,7 @@ public struct TronWeb {
         DispatchQueue.global().async {
             do {
                 let contract = TRC20(contractAddress: contractAddress).transfer(from: signer.address, to: toAddress, value: amount)
-                let txExtension =  try provider.triggerSmartContract(contract).wait()
+                let txExtension =  try provider.triggerSmartContract(contract, functionSelector: "transfer(address)",feeLimit: self.feeLimit).wait()
                 var tx = txExtension.transaction
                 tx.rawData.feeLimit = Int64(self.feeLimit.description)!
                 let hash = try tx.rawData.serializedData().sha256()

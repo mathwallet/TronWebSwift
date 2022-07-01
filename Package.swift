@@ -17,7 +17,6 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
          .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.18.0"),
-         .package(url: "https://github.com/grpc/grpc-swift", from: "1.6.1"),
          .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.4.2"),
          .package(url: "https://github.com/mathwallet/Secp256k1Swift.git", from: "1.2.6"),
          .package(url: "https://github.com/mxcl/PromiseKit.git", from: "6.16.2")
@@ -29,7 +28,6 @@ let package = Package(
             name: "TronWebSwift",
             dependencies: [
                 .product(name: "SwiftProtobuf", package: "swift-protobuf"),
-                .product(name: "GRPC", package: "grpc-swift"),
                 "CryptoSwift",
                 .product(name: "Secp256k1Swift", package: "Secp256k1Swift"),
                 .product(name: "BIP32Swift", package: "Secp256k1Swift"),
