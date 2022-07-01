@@ -27,9 +27,54 @@ extension TronWebHttpProvider {
         let parameters: [String: Encodable] = [
             "owner_address": contract.ownerAddress.toHexString(),
             "to_address": contract.toAddress.toHexString(),
-            "amount": contract.amount
+            "amount": contract.amount,
+            "visible": false
         ]
         let providerURL = self.url.appending(.createTransaction)
+        return TronWebHttpProvider.POST(parameters, providerURL: providerURL, session: self.session)
+    }
+    
+    public func transferAsset(_ contract: Protocol_TransferAssetContract) -> Promise<Protocol_Transaction> {
+        let parameters: [String: Encodable] = [
+            "owner_address": contract.ownerAddress.toHexString(),
+            "to_address": contract.toAddress.toHexString(),
+            "asset_name": contract.assetName.toHexString(),
+            "amount": contract.amount,
+            "visible": false
+        ]
+        let providerURL = self.url.appending(.transferAsset)
+        return TronWebHttpProvider.POST(parameters, providerURL: providerURL, session: self.session)
+    }
+    
+    public func triggerSmartContract(_ contract: Protocol_TriggerSmartContract, functionSelector: String, feeLimit: Int64 = 150000000) -> Promise<Protocol_TransactionExtention> {
+        let parameters: [String: Encodable] = [
+            "owner_address": contract.ownerAddress.toHexString(),
+            "contract_address": contract.contractAddress.toHexString(),
+            "function_selector": functionSelector,
+            "parameter": contract.data.toHexString(),
+            "fee_limit": feeLimit,
+            "call_value": contract.callValue,
+            "token_id": contract.tokenID,
+            "call_token_value": contract.callTokenValue,
+            "visible": false
+        ]
+        let providerURL = self.url.appending(.triggerSmartContract)
+        return TronWebHttpProvider.POST(parameters, providerURL: providerURL, session: self.session)
+    }
+    
+    public func triggerConstantContract(_ contract: Protocol_TriggerSmartContract, functionSelector: String, feeLimit: Int64 = 150000000) -> Promise<Protocol_TransactionExtention> {
+        let parameters: [String: Encodable] = [
+            "owner_address": contract.ownerAddress.toHexString(),
+            "contract_address1": contract.contractAddress.toHexString(),
+            "function_selector": functionSelector,
+            "parameter": contract.data.toHexString(),
+            "fee_limit": feeLimit,
+            "call_value": contract.callValue,
+            "token_id": contract.tokenID,
+            "call_token_value": contract.callTokenValue,
+            "visible": false
+        ]
+        let providerURL = self.url.appending(.triggerConstantContract)
         return TronWebHttpProvider.POST(parameters, providerURL: providerURL, session: self.session)
     }
 }

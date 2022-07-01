@@ -13,6 +13,7 @@ public enum TronWebRequestType: String {
     case createTransaction
     case transferAsset
     case triggerSmartContract
+    case triggerConstantContract
     case broadcastTransaction
     
     var path: String {
@@ -27,20 +28,49 @@ public enum TronWebRequestType: String {
             return "/wallet/transferasset"
         case .triggerSmartContract:
             return "/wallet/triggersmartcontract"
+        case .triggerConstantContract:
+            return "/wallet/triggerconstantcontract"
         case .broadcastTransaction:
             return "/wallet/broadcasttransaction"
         }
     }
 }
 
+public struct TronWebSmartContractResponse: Decodable {
+    public struct Result: Decodable {
+        public var result: Bool?
+        public var code: String?
+        public var message: String?
+    }
+    
+    public var result: Result?
+    public var transaction: Protocol_Transaction?
+}
+
+public struct TronWebConstantContractResponse: Decodable {
+    public struct Result: Decodable {
+        public var result: Bool?
+        public var code: String?
+        public var message: String?
+    }
+    
+    public var result: Result?
+    public var transaction: Protocol_Transaction?
+}
+
 public struct TronWebResponse {
     public struct Error: Decodable {
         public var error: String
+        
+        enum CodingKeys: String, CodingKey {
+            case error = "Error"
+        }
     }
 }
 
 
 // MARK: Addition
+
 struct Protocol_Asset: Decodable {
     public var key: String
     public var value: Int64
@@ -73,7 +103,7 @@ extension Protocol_Account.Frozen: Decodable {
 }
 
 extension Protocol_Account: Decodable {
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case address
         case accountName = "account_name"
         case balance
@@ -129,31 +159,37 @@ extension Protocol_Account: Decodable {
     }
 }
 
-extension Protocol_Transaction.raw: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case refBlockBytes = "ref_block_bytes"
-        case refBlockHash = "ref_block_hash"
-        case expiration
-        case timestamp
+extension Protocol_Return: Decodable {
+    private enum CodingKeys: String, CodingKey {
+        case result
+        case code
+        case message
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        if let rawValue = try? container.decodeIfPresent(String.self, forKey: .refBlockBytes) {
-            self.refBlockBytes =  Data(hex: rawValue)
+        if let rawValue = try? container.decodeIfPresent(Bool.self, forKey: .result) {
+            self.result = rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(String.self, forKey: .code) {
+            self.code = .otherError
+        }
+        if let rawValue = try? container.decodeIfPresent(String.self, forKey: .message) {
+            self.message = rawValue.data(using: .utf8) ?? Data()
+        }
     }
 }
 
 extension Protocol_Transaction: Decodable {
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case signature = "signature"
-        case rawData = "raw_data"
+        case rawData = "raw_data_hex"
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let rawValue = try? container.decodeIfPresent(String.self, forKey: .rawData) {
-            self.rawData =  rawValue
+            self.rawData = try Protocol_Transaction.raw(serializedData: Data(hex: rawValue))
         }
         if let rawValue = try? container.decodeIfPresent([String].self, forKey: .signature) {
             self.signature =  rawValue.map({Data(hex: $0)})
@@ -161,8 +197,33 @@ extension Protocol_Transaction: Decodable {
     }
 }
 
+extension Protocol_TransactionExtention: Decodable {
+    private enum CodingKeys: String, CodingKey {
+        case result
+        case transaction = "transaction"
+        case constantResult = "constant_result"
+        case energyUsed = "energy_used"
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let rawValue = try? container.decodeIfPresent(Protocol_Return.self, forKey: .result) {
+            self.result = rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Protocol_Transaction.self, forKey: .transaction) {
+            self.transaction = rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent([String].self, forKey: .constantResult) {
+            self.constantResult = rawValue.map({Data(hex: $0)})
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .energyUsed) {
+            self.energyUsed = rawValue
+        }
+    }
+}
+
 extension Protocol_BlockHeader.raw: Decodable {
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case timestamp
         case txTrieRoot
         case parentHash
@@ -203,7 +264,7 @@ extension Protocol_BlockHeader.raw: Decodable {
 }
 
 extension Protocol_BlockHeader: Decodable {
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case witnessSignature = "witness_signature"
         case rawData = "raw_data"
     }
@@ -218,11 +279,13 @@ extension Protocol_BlockHeader: Decodable {
 }
 
 extension Protocol_Block: Decodable {
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case blockHeader = "block_header"
+        case transactions = "transactions"
     }
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.blockHeader = try container.decode(Protocol_BlockHeader.self, forKey: .blockHeader)
+        self.transactions = try container.decode([Protocol_Transaction].self, forKey: .transactions)
     }
 }

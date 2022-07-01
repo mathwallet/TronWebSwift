@@ -51,11 +51,12 @@ extension TronWebHttpProvider {
                 task = nil
             }.map(on: queue){ (data: Data) throws -> K in
                 debugPrint(String(data: data, encoding: .utf8) ?? "")
-                if let resp = try? JSONDecoder().decode(K.self, from: data) {
-                    return resp
-                }
                 if let errResp = try? JSONDecoder().decode(TronWebResponse.Error.self, from: data) {
                     throw TronWebError.processingError(desc: errResp.error)
+                }
+                
+                if let resp = try? JSONDecoder().decode(K.self, from: data) {
+                    return resp
                 }
                 throw TronWebError.nodeError(desc: "Received an error message from node")
             }
@@ -97,12 +98,13 @@ extension TronWebHttpProvider {
                 task = nil
             }.map(on: queue){ (data: Data) throws -> K in
                 debugPrint(String(data: data, encoding: .utf8) ?? "")
-                if let resp = try? JSONDecoder().decode(K.self, from: data) {
-                    return resp
-                }
                 
                 if let errResp = try? JSONDecoder().decode(TronWebResponse.Error.self, from: data) {
                     throw TronWebError.processingError(desc: errResp.error)
+                }
+                
+                if let resp = try? JSONDecoder().decode(K.self, from: data) {
+                    return resp
                 }
                 throw TronWebError.nodeError(desc: "Received an error message from node")
             }
