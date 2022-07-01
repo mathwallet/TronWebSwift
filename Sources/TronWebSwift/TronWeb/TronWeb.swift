@@ -6,6 +6,7 @@ typealias TronTransaction = Protocol_Transaction
 typealias TronTransferContract = Protocol_TransferContract
 typealias TronTransferAssetContract = Protocol_TransferAssetContract
 typealias TronTriggerSmartContract = Protocol_TriggerSmartContract
+typealias TronTriggerSmartContractExtension = Protocol_TriggerSmartContractExtension
 
 public enum TronWebError: LocalizedError {
     case invalidProvider
@@ -117,12 +118,18 @@ public struct TronWeb {
     public func sendTRC20(to toAddress: TronAddress,
                           contract contractAddress: TronAddress,
                           amount: BigUInt,
+                          feeLimit: Int64? = nil,
                           signer: TronSigner) -> Promise<String> {
         let (promise, seal) = Promise<String>.pending()
         DispatchQueue.global().async {
             do {
-                let (contract, selector) = TRC20(contractAddress: contractAddress).transfer(from: signer.address, to: toAddress, value: amount)
-                let txExtension =  try provider.triggerSmartContract(contract, functionSelector: selector,feeLimit: self.feeLimit).wait()
+                var contractEx = TRC20(contractAddress: contractAddress).transfer(from: signer.address, to: toAddress, value: amount)
+                if let _feeLimit = feeLimit {
+                    contractEx.feeLimit = _feeLimit
+                } else {
+                    contractEx.feeLimit = self.feeLimit
+                }
+                let txExtension =  try provider.triggerSmartContract(contractEx).wait()
                 var tx = txExtension.transaction
                 tx.rawData.feeLimit = Int64(self.feeLimit.description)!
                 let hash = try tx.rawData.serializedData().sha256()

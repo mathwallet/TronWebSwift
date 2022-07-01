@@ -46,31 +46,29 @@ extension TronWebHttpProvider {
         return TronWebHttpProvider.POST(parameters, providerURL: providerURL, session: self.session)
     }
     
-    public func triggerSmartContract(_ contract: Protocol_TriggerSmartContract, functionSelector: String, feeLimit: Int64 = 150000000) -> Promise<Protocol_TransactionExtention> {
+    public func triggerSmartContract(_ ex: Protocol_TriggerSmartContractExtension) -> Promise<Protocol_TransactionExtention> {
         let parameters: [String: Encodable] = [
-            "owner_address": contract.ownerAddress.toHexString(),
-            "contract_address": contract.contractAddress.toHexString(),
-            "function_selector": functionSelector,
-            "parameter": contract.data.toHexString(),
-            "fee_limit": feeLimit,
-            "call_value": contract.callValue,
-            "token_id": contract.tokenID,
-            "call_token_value": contract.callTokenValue,
+            "owner_address": ex.contract.ownerAddress.toHexString(),
+            "contract_address": ex.contract.contractAddress.toHexString(),
+            "function_selector": ex.functionSelector,
+            "parameter": ex.parameter,
+            "fee_limit": ex.feeLimit,
+            "call_value": ex.contract.callValue,
+            "token_id": ex.contract.tokenID,
+            "call_token_value": ex.contract.callTokenValue,
             "visible": false
         ]
         let providerURL = self.url.appending(.triggerSmartContract)
         return TronWebHttpProvider.POST(parameters, providerURL: providerURL, session: self.session)
     }
     
-    public func triggerConstantContract(_ contract: Protocol_TriggerSmartContract, functionSelector: String) -> Promise<Protocol_TransactionExtention> {
+    public func triggerConstantContract(_ ex: Protocol_TriggerSmartContractExtension) -> Promise<Protocol_TransactionExtention> {
         let parameters: [String: Encodable] = [
-            "owner_address": contract.ownerAddress.toHexString(),
-            "contract_address": contract.contractAddress.toHexString(),
-            "function_selector": functionSelector,
-            "parameter": contract.data.toHexString(),
-            "call_value": contract.callValue,
-            "token_id": contract.tokenID,
-            "call_token_value": contract.callTokenValue,
+            "owner_address": ex.contract.ownerAddress.toHexString(),
+            "contract_address": ex.contract.contractAddress.toHexString(),
+            "function_selector": ex.functionSelector,
+            "parameter": ex.feeLimit,
+            "call_value": ex.contract.callValue,
             "visible": false
         ]
         let providerURL = self.url.appending(.triggerConstantContract)

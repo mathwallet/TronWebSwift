@@ -68,10 +68,21 @@ public struct TronWebResponse {
     }
 }
 
-
 // MARK: Addition
 
-struct Protocol_Asset: Decodable {
+public struct Protocol_TriggerSmartContractExtension {
+    public var contract: Protocol_TriggerSmartContract
+    public var functionSelector: String
+    public var feeLimit: Int64 = 0
+    public var parameter: Data {
+        guard contract.data.count >= 4 else {
+            return Data()
+        }
+        return contract.data.suffix(from: 4)
+    }
+}
+
+public struct Protocol_Asset: Decodable {
     public var key: String
     public var value: Int64
 }
