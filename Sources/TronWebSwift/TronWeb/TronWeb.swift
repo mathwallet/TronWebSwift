@@ -2,11 +2,11 @@ import Foundation
 import PromiseKit
 import BigInt
 
-typealias TronTransaction = Protocol_Transaction
-typealias TronTransferContract = Protocol_TransferContract
-typealias TronTransferAssetContract = Protocol_TransferAssetContract
-typealias TronTriggerSmartContract = Protocol_TriggerSmartContract
-typealias TronTriggerSmartContractExtension = Protocol_TriggerSmartContractExtension
+public typealias TronTransaction = Protocol_Transaction
+public typealias TronTransferContract = Protocol_TransferContract
+public typealias TronTransferAssetContract = Protocol_TransferAssetContract
+public typealias TronTriggerSmartContract = Protocol_TriggerSmartContract
+public typealias TronTriggerSmartContractExtension = Protocol_TriggerSmartContractExtension
 
 public enum TronWebError: LocalizedError {
     case invalidProvider
