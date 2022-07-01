@@ -16,7 +16,7 @@ public struct TronSigner {
         return TronAddress(publicKey: publicKey)!
     }
     
-    init(privateKey: Data) throws {
+    public init(privateKey: Data) throws {
         guard TronSigner.isValidPrivateKey(privateKey), let publicKey = SECP256K1.privateToPublic(privateKey: privateKey, compressed: false) else {
             throw Error.invalidPrivateKey
         }

@@ -123,7 +123,7 @@ public struct TronWeb {
         let (promise, seal) = Promise<String>.pending()
         DispatchQueue.global().async {
             do {
-                var contractEx = TRC20(contractAddress: contractAddress).transfer(from: signer.address, to: toAddress, value: amount)
+                var contractEx = TronWebContract(contractAddress).trc20.transfer(signer.address, to: toAddress, value: amount)
                 if let _feeLimit = feeLimit {
                     contractEx.feeLimit = _feeLimit
                 } else {

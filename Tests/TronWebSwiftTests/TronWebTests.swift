@@ -99,7 +99,8 @@ final class TronWebTests: XCTestCase {
         
         DispatchQueue.global().async {
             do {
-                let contractEx = TRC20(contractAddress: TronAddress("TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9")!).balanceOf(owner: TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!)
+                let contract = TronWebContract(TronAddress("TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9")!)
+                let contractEx = contract.trc20.balanceOf(TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!)
                 let txExtension =  try self.provider.triggerConstantContract(contractEx).wait()
                 debugPrint(BigUInt(txExtension.constantResult.first!).description)
                 reqeustExpectation.fulfill()
