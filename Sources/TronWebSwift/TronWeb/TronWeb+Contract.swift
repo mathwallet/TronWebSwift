@@ -53,7 +53,7 @@ extension TronWeb {
                 if let returnData = res.constantResult.first {
                     resolver.fulfill(contract.decodeReturnData(method, data: returnData) ?? [:])
                 } else {
-                    resolver.fulfill([:])
+                    resolver.reject(TronWebError.processingError(desc: "Contract read error."))
                 }
             }
         }

@@ -84,6 +84,10 @@ class TronWebTests: XCTestCase {
                 
                 let response = try c.read("name").wait()
                 debugPrint(response)
+                
+                let response2 = try c.read("balanceOf", parameters: [TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!] as! [AnyObject]).wait()
+                debugPrint(response2)
+                
                 reqeustExpectation.fulfill()
             } catch let error {
                 debugPrint(error.localizedDescription)
