@@ -32,8 +32,8 @@ class TronWebTests: XCTestCase {
                 opts.feeLimit = 15000000
                 
                 let parameters = [toAddress, BigUInt(100)] as [AnyObject]
-                let tx = try c.write("transfer", parameters: parameters, signer: self.signer, transactionOptions: opts).wait()
-                debugPrint(tx)
+                let response = try c.write("transfer", parameters: parameters, signer: self.signer, transactionOptions: opts).wait()
+                debugPrint(response)
                 
                 reqeustExpectation.fulfill()
             } catch let error {
@@ -60,6 +60,29 @@ class TronWebTests: XCTestCase {
                 let signedTx = try tx.sign(self.signer)
                 
                 let response = try self.provider.broadcastTransaction(signedTx).wait()
+                debugPrint(response)
+                reqeustExpectation.fulfill()
+            } catch let error {
+                debugPrint(error.localizedDescription)
+                reqeustExpectation.fulfill()
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
+    
+    func testTRC20InfoExample() throws {
+        let reqeustExpectation = expectation(description: "testReqeust")
+        
+        DispatchQueue.global().async {
+            do {
+                let contractAddress = TronAddress("TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8")
+                
+                guard let c = self.tronWeb.contract(TronWeb.Utils.trc20ABI, at: contractAddress) else {
+                    reqeustExpectation.fulfill()
+                    return
+                }
+                
+                let response = try c.read("name").wait()
                 debugPrint(response)
                 reqeustExpectation.fulfill()
             } catch let error {

@@ -103,15 +103,9 @@ public struct TronContract: TronContractProtocol {
     }
     
     public func decodeReturnData(_ method: String, data: Data) -> [String : Any]? {
-        return nil
-    }
-    
-    public func decodeInputData(_ method: String, data: Data) -> [String : Any]? {
-        return nil
-    }
-    
-    public func decodeInputData(_ data: Data) -> [String : Any]? {
-        return nil
+        guard let function = methods[method] else {return nil}
+        guard case .function(_) = function else {return nil}
+        return function.decodeReturnData(data)
     }
 }
 

@@ -13,6 +13,4 @@ public protocol TronContractProtocol {
     func method(_ method:String, parameters: [AnyObject], transactionOptions: TronTransactionOptions?) -> TronTriggerSmartContractExtension?
     init?(_ abiString: String, at: TronAddress?)
     func decodeReturnData(_ method:String, data: Data) -> [String:Any]?
-    func decodeInputData(_ method:String, data: Data) -> [String:Any]?
-    func decodeInputData(_ data: Data) -> [String:Any]?
 }
