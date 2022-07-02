@@ -82,7 +82,7 @@ public struct TronTriggerSmartContractExtension {
     }
 }
 
-public struct TronTransctionResponse: Decodable {
+public struct TronTransactionSendingResult: Decodable {
     public var result: Bool
     public var code: String?
     public var message: String?

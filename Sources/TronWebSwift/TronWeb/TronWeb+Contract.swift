@@ -40,7 +40,7 @@ extension TronWeb {
             }
         }
         
-        public func write(_ method: String, parameters: [AnyObject] = [AnyObject](), signer: TronSigner, transactionOptions: TronTransactionOptions? = nil) -> Promise<TronTransctionResponse> {
+        public func write(_ method: String, parameters: [AnyObject] = [AnyObject](), signer: TronSigner, transactionOptions: TronTransactionOptions? = nil) -> Promise<TronTransactionSendingResult> {
             return Promise { resolver in
                 let opts = transactionOptions ?? self.transactionOptions
                 guard let request = contract.method(method, parameters: parameters, transactionOptions: opts) else {

@@ -75,7 +75,7 @@ extension TronWebHttpProvider {
         return TronWebHttpProvider.POST(parameters, providerURL: providerURL, session: self.session)
     }
     
-    public func broadcastTransaction(_ transaction: Protocol_Transaction) -> Promise<TronTransctionResponse> {
+    public func broadcastTransaction(_ transaction: Protocol_Transaction) -> Promise<TronTransactionSendingResult> {
         let parameters: [String: Encodable] = [
             "transaction": try! transaction.serializedData().toHexString()
         ]
