@@ -28,7 +28,7 @@ public enum TronWebError: LocalizedError {
 }
     
 public struct TronWeb {
-    let provider: TronWebHttpProvider
+    public let provider: TronWebHttpProvider
     let transactionOptions: TronTransactionOptions?
     
     public init(provider: TronWebHttpProvider, options: TronTransactionOptions? = nil) {
