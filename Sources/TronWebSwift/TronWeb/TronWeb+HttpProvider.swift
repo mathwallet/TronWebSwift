@@ -67,14 +67,14 @@ extension TronWebHttpProvider {
         var task: URLSessionTask? = nil
         queue.async {
             do {
-                debugPrint("POST \(providerURL)")
+//                debugPrint("POST \(providerURL)")
                 var urlRequest = URLRequest(url: providerURL, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData)
                 urlRequest.httpMethod = "POST"
                 urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
                 if let p = parameters {
                     urlRequest.httpBody = try JSONSerialization.data(withJSONObject: p, options: .fragmentsAllowed)
-                    debugPrint(p)
+//                    debugPrint(p)
                 }
                 
                 task = session.dataTask(with: urlRequest){ (data, response, error) in
@@ -96,7 +96,7 @@ extension TronWebHttpProvider {
         return rp.promise.ensure(on: queue) {
                 task = nil
             }.map(on: queue){ (data: Data) throws -> K in
-                debugPrint(String(data: data, encoding: .utf8) ?? "")
+//                debugPrint(String(data: data, encoding: .utf8) ?? "")
                 
                 if let errResp = try? JSONDecoder().decode(TronWebResponse.Error.self, from: data) {
                     throw TronWebError.processingError(desc: errResp.error)
