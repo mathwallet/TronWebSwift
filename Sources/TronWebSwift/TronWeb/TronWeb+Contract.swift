@@ -28,7 +28,7 @@ extension TronWeb {
             self.contract = c
         }
         
-        public func build(_ method: String, parameters: [AnyObject] = [AnyObject](), signer: TronSigner, transactionOptions: TronTransactionOptions? = nil) -> Promise<TronTransaction> {
+        public func build(_ method: String, parameters: [AnyObject] = [AnyObject](), transactionOptions: TronTransactionOptions? = nil) -> Promise<TronTransaction> {
             return Promise { resolver in
                 let opts = transactionOptions ?? self.transactionOptions
                 guard let request = contract.method(method, parameters: parameters, transactionOptions: opts) else {
