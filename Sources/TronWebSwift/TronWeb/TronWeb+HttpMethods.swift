@@ -70,7 +70,7 @@ public struct TronWebResponse {
 
 // MARK: Addition
 
-public struct Protocol_TriggerSmartContractExtension {
+public struct TronTriggerSmartContractExtension {
     public var contract: Protocol_TriggerSmartContract
     public var functionSelector: String
     public var feeLimit: Int64 = 0
@@ -81,6 +81,23 @@ public struct Protocol_TriggerSmartContractExtension {
         return contract.data.suffix(from: 4)
     }
 }
+
+public struct TronTransctionResponse: Decodable {
+    public var result: Bool
+    public var code: String?
+    public var message: String?
+    public var txid: String
+    public var transaction: String
+    
+    enum CodingKeys: String, CodingKey {
+        case result
+        case code
+        case message
+        case txid
+        case transaction
+    }
+}
+
 
 public struct Protocol_Asset: Decodable {
     public var key: String

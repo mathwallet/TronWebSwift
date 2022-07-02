@@ -13,6 +13,8 @@ public struct TronAddress: CustomStringConvertible {
     public static let size = 20
     public static let addressPrefix: UInt8 = 0x41
     
+    public static let empty = TronAddress(Data(hex: "410000000000000000000000000000000000000000"))!
+    
     public var address: String
     public var data: Data
     
