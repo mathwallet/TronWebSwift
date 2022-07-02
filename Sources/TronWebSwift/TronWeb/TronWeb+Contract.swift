@@ -7,6 +7,7 @@
 
 import Foundation
 import PromiseKit
+import BigInt
 
 extension TronWeb {
     public func contract(_ abiString: String, at: TronAddress?) -> WebContract? {
@@ -25,6 +26,18 @@ extension TronWeb {
                 return nil
             }
             self.contract = c
+        }
+        
+        public func build(_ method: String, parameters: [AnyObject] = [AnyObject](), signer: TronSigner, transactionOptions: TronTransactionOptions? = nil) -> Promise<TronTransaction> {
+            return Promise { resolver in
+                let opts = transactionOptions ?? self.transactionOptions
+                guard let request = contract.method(method, parameters: parameters, transactionOptions: opts) else {
+                    resolver.reject(TronWebError.processingError(desc: "Contract writing error."))
+                    return
+                }
+                let txEx = try self.provider.triggerSmartContract(request).wait()
+                resolver.fulfill(txEx.transaction)
+            }
         }
         
         public func write(_ method: String, parameters: [AnyObject] = [AnyObject](), signer: TronSigner, transactionOptions: TronTransactionOptions? = nil) -> Promise<TronTransctionResponse> {

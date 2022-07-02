@@ -35,4 +35,29 @@ public struct TronWeb {
         self.provider = provider
         self.transactionOptions = options
     }
+    
+    public func build(_ toAddress: TronAddress, ownerAddress: TronAddress, amount: BigUInt) -> Promise<TronTransaction> {
+        return Promise { resolver in
+            let contract = Protocol_TransferContract.with {
+                $0.ownerAddress = ownerAddress.data
+                $0.toAddress = toAddress.data
+                $0.amount = Int64(amount.description) ?? 0
+            }
+            let tx = try self.provider.createTransaction(contract).wait()
+            resolver.fulfill(tx)
+        }
+    }
+    
+    public func build(_ toAddress: TronAddress, ownerAddress: TronAddress, assetName: String, amount: BigUInt) -> Promise<TronTransaction> {
+        return Promise { resolver in
+            let contract = Protocol_TransferAssetContract.with {
+                $0.ownerAddress = ownerAddress.data
+                $0.assetName = assetName.data(using: .utf8)!
+                $0.toAddress = toAddress.data
+                $0.amount = Int64(amount.description) ?? 0
+            }
+            let tx = try self.provider.transferAsset(contract).wait()
+            resolver.fulfill(tx)
+        }
+    }
 }

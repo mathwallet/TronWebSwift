@@ -96,5 +96,23 @@ class TronWebTests: XCTestCase {
         }
         wait(for: [reqeustExpectation], timeout: 30)
     }
+    
+    func testBuildTransactionExample() throws {
+        let reqeustExpectation = expectation(description: "testReqeust")
+        
+        DispatchQueue.global().async {
+            do {
+                let ownerAddress = TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!
+                let toAddress = TronAddress("TVrXFXRHZtJaEWAgr5h5LChCLFWe2WjaiB")!
+                let tx = try self.tronWeb.build(toAddress, ownerAddress: ownerAddress, amount: BigUInt(100)).wait()
+                debugPrint(tx)
+                reqeustExpectation.fulfill()
+            } catch let error {
+                debugPrint(error.localizedDescription)
+                reqeustExpectation.fulfill()
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
 
 }
