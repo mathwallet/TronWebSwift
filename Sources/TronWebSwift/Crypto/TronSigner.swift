@@ -36,8 +36,8 @@ extension TronSigner {
         return signedData.serializedSignature
     }
     
-    public func signPersonalMessage(_ personalMessage: Data) -> Data? {
-        let prefix = "\u{19}TRON Signed Message:\n32"
+    public func signPersonalMessage(_ personalMessage: Data, useTronHeader: Bool = true) -> Data? {
+        let prefix = useTronHeader ? "\u{19}TRON Signed Message:\n32" : "\u{19}Ethereum Signed Message:\n32"
         
         guard let prefixData = prefix.data(using: .ascii) else { return nil }
         
