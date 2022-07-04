@@ -8,7 +8,7 @@
 import Foundation
 import Secp256k1Swift
 
-public struct TronSigner {
+public struct TronSigner: CustomStringConvertible {
     public var privateKey: Data
     public var publicKey: Data
     
@@ -25,8 +25,23 @@ public struct TronSigner {
         self.publicKey = publicKey
     }
     
+    public static func generate() throws -> TronSigner {
+        guard let pri = SECP256K1.generatePrivateKey() else {
+            throw Error.invalidPrivateKey
+        }
+        return try TronSigner(privateKey: pri)
+    }
+    
     public static func isValidPrivateKey(_ privateKey: Data) -> Bool{
         return SECP256K1.verifyPrivateKey(privateKey: privateKey)
+    }
+    
+    public var description: String {
+        return """
+            address: \(address.address),
+            publicKey: \(publicKey.toHexString())
+            privateKey: \(privateKey.toHexString())
+        """
     }
 }
 

@@ -418,83 +418,85 @@ extension Protocol_MarketCancelOrderContract: TronHumanDecodable {
     }
 }
 
-extension Protocol_Transaction: TronHumanDecodable {
-    public func toHuman() throws -> [String: Any] {
-        var humanList = [String : Any]()
+extension Protocol_Transaction {
+    public func toHuman() throws -> Array<[String: Any]> {
+        var humanList = [[String : Any]]()
         for contract in self.rawData.contract {
+            var humanMap = [String : Any]()
+            humanMap["type"] = contract.type.rawValue
+            humanMap["typeURL"] = contract.parameter.typeURL
             let data = contract.parameter.value
-            humanList["type"] = contract.type.rawValue
-            humanList["typeURL"] = contract.parameter.typeURL
             switch contract.type {
             case .accountCreateContract:
-                humanList["value"] = try Protocol_AccountCreateContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_AccountCreateContract(serializedData: data).toHuman()
             case .transferContract:
-                humanList["value"] = try Protocol_TransferContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_TransferContract(serializedData: data).toHuman()
             case .transferAssetContract:
-                humanList["value"] = try Protocol_TransferAssetContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_TransferAssetContract(serializedData: data).toHuman()
             case .voteAssetContract:
-                humanList["value"] = try Protocol_VoteAssetContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_VoteAssetContract(serializedData: data).toHuman()
             case .voteWitnessContract:
-                humanList["value"] = try Protocol_VoteWitnessContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_VoteWitnessContract(serializedData: data).toHuman()
             case .witnessCreateContract:
-                humanList["value"] = try Protocol_WitnessCreateContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_WitnessCreateContract(serializedData: data).toHuman()
             case .assetIssueContract:
-                humanList["value"] = try Protocol_AssetIssueContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_AssetIssueContract(serializedData: data).toHuman()
             case .witnessUpdateContract:
-                humanList["value"] = try Protocol_WitnessUpdateContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_WitnessUpdateContract(serializedData: data).toHuman()
             case .participateAssetIssueContract:
-                humanList["value"] = try Protocol_ParticipateAssetIssueContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ParticipateAssetIssueContract(serializedData: data).toHuman()
             case .accountUpdateContract:
-                humanList["value"] = try Protocol_AccountUpdateContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_AccountUpdateContract(serializedData: data).toHuman()
             case .freezeBalanceContract:
-                humanList["value"] = try Protocol_FreezeBalanceContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_FreezeBalanceContract(serializedData: data).toHuman()
             case .unfreezeBalanceContract:
-                humanList["value"] = try Protocol_UnfreezeBalanceContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_UnfreezeBalanceContract(serializedData: data).toHuman()
             case .withdrawBalanceContract:
-                humanList["value"] = try Protocol_WithdrawBalanceContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_WithdrawBalanceContract(serializedData: data).toHuman()
             case .unfreezeAssetContract:
-                humanList["value"] = try Protocol_UnfreezeAssetContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_UnfreezeAssetContract(serializedData: data).toHuman()
             case .updateAssetContract:
-                humanList["value"] = try Protocol_UpdateAssetContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_UpdateAssetContract(serializedData: data).toHuman()
             case .proposalCreateContract:
-                humanList["value"] = try Protocol_ProposalCreateContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ProposalCreateContract(serializedData: data).toHuman()
             case .proposalApproveContract:
-                humanList["value"] = try Protocol_ProposalApproveContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ProposalApproveContract(serializedData: data).toHuman()
             case .proposalDeleteContract:
-                humanList["value"] = try Protocol_ProposalDeleteContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ProposalDeleteContract(serializedData: data).toHuman()
             case .setAccountIDContract:
-                humanList["value"] = try Protocol_SetAccountIdContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_SetAccountIdContract(serializedData: data).toHuman()
             case .createSmartContract:
-                humanList["value"] = try Protocol_CreateSmartContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_CreateSmartContract(serializedData: data).toHuman()
             case .triggerSmartContract:
-                humanList["value"] = try Protocol_TriggerSmartContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_TriggerSmartContract(serializedData: data).toHuman()
             case .updateSettingContract:
-                humanList["value"] = try Protocol_UpdateSettingContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_UpdateSettingContract(serializedData: data).toHuman()
             case .exchangeCreateContract:
-                humanList["value"] = try Protocol_ExchangeCreateContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ExchangeCreateContract(serializedData: data).toHuman()
             case .exchangeInjectContract:
-                humanList["value"] = try Protocol_ExchangeInjectContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ExchangeInjectContract(serializedData: data).toHuman()
             case .exchangeWithdrawContract:
-                humanList["value"] = try Protocol_ExchangeWithdrawContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ExchangeWithdrawContract(serializedData: data).toHuman()
             case .exchangeTransactionContract:
-                humanList["value"] = try Protocol_ExchangeTransactionContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ExchangeTransactionContract(serializedData: data).toHuman()
             case .updateEnergyLimitContract:
-                humanList["value"] = try Protocol_UpdateEnergyLimitContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_UpdateEnergyLimitContract(serializedData: data).toHuman()
             case .accountPermissionUpdateContract:
-                humanList["value"] = try Protocol_AccountPermissionUpdateContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_AccountPermissionUpdateContract(serializedData: data).toHuman()
             case .clearAbicontract:
-                humanList["value"] = try Protocol_ClearABIContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ClearABIContract(serializedData: data).toHuman()
             case .updateBrokerageContract:
-                humanList["value"] = try Protocol_UpdateBrokerageContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_UpdateBrokerageContract(serializedData: data).toHuman()
             case .shieldedTransferContract:
-                humanList["value"] = try Protocol_ShieldedTransferContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_ShieldedTransferContract(serializedData: data).toHuman()
             case .marketSellAssetContract:
-                humanList["value"] = try Protocol_MarketSellAssetContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_MarketSellAssetContract(serializedData: data).toHuman()
             case .marketCancelOrderContract:
-                humanList["value"] = try Protocol_MarketCancelOrderContract(serializedData: data).toHuman()
+                humanMap["value"] = try Protocol_MarketCancelOrderContract(serializedData: data).toHuman()
             default:
-                humanList["value"] = [:]
+                humanMap["value"] = [:]
             }
+            humanList.append(humanMap)
         }
         return humanList
     }

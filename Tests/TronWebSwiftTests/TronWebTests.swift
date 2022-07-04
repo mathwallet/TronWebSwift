@@ -14,6 +14,10 @@ class TronWebTests: XCTestCase {
     let signer = try! TronSigner(privateKey: Data(hex: "4705824132a933e466df987395d398ff31603fc0e08b447a7be1fce841ce21c9"))
     var tronWeb: TronWeb { return TronWeb(provider: provider) }
 
+    func testCreateAccountExample() throws {
+        debugPrint(try TronSigner.generate())
+    }
+    
     func testContractsExample() throws {
         let reqeustExpectation = expectation(description: "testReqeust")
         
