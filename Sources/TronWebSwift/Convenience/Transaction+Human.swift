@@ -16,6 +16,11 @@ public struct TronHumanToken {
     public var symbol: String
     public var decimal: Int
     
+    public init(symbol: String, decimal: Int) {
+        self.symbol = symbol
+        self.decimal = decimal
+    }
+    
     public func formatString(amount: Int64) -> String {
         return "\(Decimal(amount).power10(-decimal).description) \(symbol)"
     }
