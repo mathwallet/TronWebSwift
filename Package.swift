@@ -19,6 +19,7 @@ let package = Package(
          .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.18.0"),
          .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.4.2"),
          .package(url: "https://github.com/mathwallet/Secp256k1Swift.git", from: "1.2.6"),
+         .package(url: "https://github.com/mathwallet/BIP39swift", from: "1.0.0"),
          .package(url: "https://github.com/mxcl/PromiseKit.git", from: "6.16.2")
     ],
     targets: [
@@ -31,6 +32,7 @@ let package = Package(
                 "CryptoSwift",
                 .product(name: "Secp256k1Swift", package: "Secp256k1Swift"),
                 .product(name: "BIP32Swift", package: "Secp256k1Swift"),
+                "BIP39swift",
                 "PromiseKit"
             ]
         ),

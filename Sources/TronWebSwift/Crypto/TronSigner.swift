@@ -7,8 +7,13 @@
 
 import Foundation
 import Secp256k1Swift
+import BIP39swift
+import BIP32Swift
 
 public struct TronSigner: CustomStringConvertible {
+    public static let PATH = "m/44'/195'/0'/0/0"
+    
+    public var mnemonics: String?
     public var privateKey: Data
     public var publicKey: Data
     
@@ -21,15 +26,34 @@ public struct TronSigner: CustomStringConvertible {
             throw Error.invalidPrivateKey
         }
         
+        self.mnemonics = nil
+        self.privateKey = privateKey
+        self.publicKey = publicKey
+    }
+    
+    public init(mnemonics: String) throws {
+        guard let seed = BIP39.seedFromMmemonics(mnemonics) else {
+            throw Error.invalidMnemonics
+        }
+        guard let node = HDNode(seed: seed), let treeNode = node.derive(path: TronSigner.PATH) else {
+            throw Error.invalidMnemonics
+        }
+        guard let privateKey = treeNode.privateKey else {
+            throw Error.invalidMnemonics
+        }
+        guard let publicKey = SECP256K1.privateToPublic(privateKey: privateKey, compressed: false) else {
+            throw Error.invalidPrivateKey
+        }
+        self.mnemonics = mnemonics
         self.privateKey = privateKey
         self.publicKey = publicKey
     }
     
     public static func generate() throws -> TronSigner {
-        guard let pri = SECP256K1.generatePrivateKey() else {
-            throw Error.invalidPrivateKey
+        guard let mnemonics = try BIP39.generateMnemonics(bitsOfEntropy: 128, language: .english) else {
+            throw Error.invalidMnemonics
         }
-        return try TronSigner(privateKey: pri)
+        return try TronSigner(mnemonics: mnemonics)
     }
     
     public static func isValidPrivateKey(_ privateKey: Data) -> Bool{
@@ -38,6 +62,7 @@ public struct TronSigner: CustomStringConvertible {
     
     public var description: String {
         return """
+            mnemonics: \(mnemonics ?? ""),
             address: \(address.address),
             publicKey: \(publicKey.toHexString())
             privateKey: \(privateKey.toHexString())
@@ -70,6 +95,7 @@ extension TronSigner {
 
 extension TronSigner {
     public enum Error: String, LocalizedError {
+        case invalidMnemonics
         case invalidPrivateKey
         
         public var errorDescription: String? {
