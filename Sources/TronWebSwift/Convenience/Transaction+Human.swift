@@ -9,6 +9,18 @@ import Foundation
 import CryptoSwift
 import SwiftProtobuf
 
+
+public struct TronHumanToken {
+    public static var MAIN: TronHumanToken = TronHumanToken(symbol: "TRX", decimal: 6)
+    
+    public var symbol: String
+    public var decimal: Int
+    
+    public func formatString(amount: Int64) -> String {
+        return "\(Decimal(amount).power10(-decimal).description) \(symbol)"
+    }
+}
+
 public protocol TronHumanDecodable {
     func toHuman() throws -> [String: Any]
 }
@@ -72,7 +84,7 @@ extension Protocol_TransferContract: TronHumanDecodable {
         return [
             "ownerAddress": TronAddress(ownerAddress)?.address ?? "",
             "toAddress": TronAddress(toAddress)?.address ?? "",
-            "amount": amount
+            "amount": TronHumanToken.MAIN.formatString(amount: amount)
         ]
     }
 }
@@ -257,7 +269,7 @@ extension Protocol_CreateSmartContract: TronHumanDecodable {
                     "originAddress": TronAddress(newContract.originAddress)?.address ?? "",
                     "contractAddress": TronAddress(newContract.contractAddress)?.address ?? "",
                     "bytecode": newContract.bytecode.toHexString(),
-                    "callValue": newContract.callValue,
+                    "callValue": TronHumanToken.MAIN.formatString(amount: callTokenValue),
                     "codeHash": newContract.codeHash,
                     "version": newContract.version
                 ],
@@ -276,14 +288,17 @@ extension Protocol_CreateSmartContract: TronHumanDecodable {
 
 extension Protocol_TriggerSmartContract: TronHumanDecodable {
     public func toHuman() throws -> [String : Any] {
-        return [
+        var map: [String: Any] = [
             "ownerAddress": TronAddress(ownerAddress)?.address ?? "",
             "contractAddress": TronAddress(contractAddress)?.address ?? "",
-            "callValue": callValue,
-            "data": data.toHexString(),
-            "callTokenValue": callTokenValue,
-            "tokenID": tokenID
+            "callValue": TronHumanToken.MAIN.formatString(amount: callValue),
+            "data": data.toHexString()
         ]
+        if tokenID > 0 {
+            map["tokenID"] = tokenID
+            map["callTokenValue"] = callTokenValue
+        }
+        return map
     }
 }
 
@@ -464,7 +479,10 @@ extension Protocol_MarketCancelOrderContract: TronHumanDecodable {
 }
 
 extension Protocol_Transaction {
-    public func toHuman() throws -> Array<[String: Any]> {
+    public func toHuman(_ main: TronHumanToken? = nil) throws -> Array<[String: Any]> {
+        if let _main = main {
+            TronHumanToken.MAIN = _main
+        }
         let types: [SwiftProtobuf.Message.Type] = [
             Protocol_AccountCreateContract.self,
             Protocol_TransferContract.self,
