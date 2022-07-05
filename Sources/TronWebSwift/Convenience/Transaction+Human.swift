@@ -7,9 +7,54 @@
 
 import Foundation
 import CryptoSwift
+import SwiftProtobuf
 
 public protocol TronHumanDecodable {
     func toHuman() throws -> [String: Any]
+}
+
+extension Protocol_AccountType {
+    var desc: String {
+        switch self {
+        case .normal:
+            return "normal"
+        case .assetIssue:
+            return "assetIssue"
+        case .contract:
+            return "contract"
+        case .UNRECOGNIZED(let i):
+            return "unrecognized(\(i)"
+        }
+    }
+}
+extension Protocol_Permission.PermissionType {
+    var desc: String {
+        switch self {
+        case .owner:
+            return "owner"
+        case .witness:
+            return "witness"
+        case .active:
+            return "active"
+        case .UNRECOGNIZED(let i):
+            return "unrecognized(\(i)"
+        }
+    }
+}
+
+extension Protocol_ResourceCode {
+    var desc: String {
+        switch self {
+        case .bandwidth:
+            return "bandwidth"
+        case .energy:
+            return "energy"
+        case .tronPower:
+            return "tronPower"
+        case .UNRECOGNIZED(let i):
+            return "unrecognized(\(i)"
+        }
+    }
 }
 
 extension Protocol_AccountCreateContract: TronHumanDecodable {
@@ -17,7 +62,7 @@ extension Protocol_AccountCreateContract: TronHumanDecodable {
         return [
             "ownerAddress": TronAddress(ownerAddress)?.address ?? "",
             "accountAddress": TronAddress(accountAddress)?.address ?? "",
-            "type": self.type.rawValue
+            "type": self.type.desc
         ]
     }
 }
@@ -123,7 +168,7 @@ extension Protocol_FreezeBalanceContract: TronHumanDecodable {
             "receiverAddress": TronAddress(receiverAddress)?.address ?? "",
             "frozenBalance": frozenBalance,
             "frozenDuration": frozenDuration,
-            "resource": resource.rawValue
+            "resource": resource.desc
         ]
     }
 }
@@ -133,7 +178,7 @@ extension Protocol_UnfreezeBalanceContract: TronHumanDecodable {
         return [
             "ownerAddress": TronAddress(ownerAddress)?.address ?? "",
             "receiverAddress": TronAddress(receiverAddress)?.address ?? "",
-            "resource": resource.rawValue
+            "resource": resource.desc
         ]
     }
 }
@@ -313,7 +358,7 @@ extension Protocol_AccountPermissionUpdateContract: TronHumanDecodable {
         return [
             "ownerAddress": TronAddress(ownerAddress)?.address ?? "",
             "owner": hasOwner ? [
-                "type": owner.type.rawValue,
+                "type": owner.type.desc,
                 "id": owner.id,
                 "permissionName": owner.permissionName,
                 "threshold": owner.threshold,
@@ -324,7 +369,7 @@ extension Protocol_AccountPermissionUpdateContract: TronHumanDecodable {
                 ]})
             ] : [:],
             "witness": hasWitness ? [
-                "type": witness.type.rawValue,
+                "type": witness.type.desc,
                 "id": witness.id,
                 "permissionName": witness.permissionName,
                 "threshold": witness.threshold,
@@ -336,7 +381,7 @@ extension Protocol_AccountPermissionUpdateContract: TronHumanDecodable {
             ] : [:],
             "actives": actives.map({
                 [
-                    "type": $0.type.rawValue,
+                    "type": $0.type.desc,
                     "id": $0.id,
                     "permissionName": $0.permissionName,
                     "threshold": $0.threshold,
@@ -420,80 +465,52 @@ extension Protocol_MarketCancelOrderContract: TronHumanDecodable {
 
 extension Protocol_Transaction {
     public func toHuman() throws -> Array<[String: Any]> {
+        let types: [SwiftProtobuf.Message.Type] = [
+            Protocol_AccountCreateContract.self,
+            Protocol_TransferContract.self,
+            Protocol_TransferAssetContract.self,
+            Protocol_VoteAssetContract.self,
+            Protocol_VoteWitnessContract.self,
+            Protocol_WitnessCreateContract.self,
+            Protocol_AssetIssueContract.self,
+            Protocol_WitnessUpdateContract.self,
+            Protocol_ParticipateAssetIssueContract.self,
+            Protocol_AccountUpdateContract.self,
+            Protocol_FreezeBalanceContract.self,
+            Protocol_UnfreezeBalanceContract.self,
+            Protocol_WithdrawBalanceContract.self,
+            Protocol_UnfreezeAssetContract.self,
+            Protocol_UpdateAssetContract.self,
+            Protocol_ProposalCreateContract.self,
+            Protocol_ProposalApproveContract.self,
+            Protocol_ProposalDeleteContract.self,
+            Protocol_SetAccountIdContract.self,
+            Protocol_CreateSmartContract.self,
+            Protocol_TriggerSmartContract.self,
+            Protocol_UpdateSettingContract.self,
+            Protocol_ExchangeCreateContract.self,
+            Protocol_ExchangeInjectContract.self,
+            Protocol_ExchangeWithdrawContract.self,
+            Protocol_ExchangeTransactionContract.self,
+            Protocol_UpdateEnergyLimitContract.self,
+            Protocol_AccountPermissionUpdateContract.self,
+            Protocol_ClearABIContract.self,
+            Protocol_UpdateBrokerageContract.self,
+            Protocol_ShieldedTransferContract.self,
+            Protocol_MarketSellAssetContract.self,
+            Protocol_MarketCancelOrderContract.self,
+        ]
         var humanList = [[String : Any]]()
         for contract in self.rawData.contract {
             var humanMap = [String : Any]()
             humanMap["type"] = contract.type.rawValue
             humanMap["typeURL"] = contract.parameter.typeURL
             let data = contract.parameter.value
-            switch contract.type {
-            case .accountCreateContract:
-                humanMap["value"] = try Protocol_AccountCreateContract(serializedData: data).toHuman()
-            case .transferContract:
-                humanMap["value"] = try Protocol_TransferContract(serializedData: data).toHuman()
-            case .transferAssetContract:
-                humanMap["value"] = try Protocol_TransferAssetContract(serializedData: data).toHuman()
-            case .voteAssetContract:
-                humanMap["value"] = try Protocol_VoteAssetContract(serializedData: data).toHuman()
-            case .voteWitnessContract:
-                humanMap["value"] = try Protocol_VoteWitnessContract(serializedData: data).toHuman()
-            case .witnessCreateContract:
-                humanMap["value"] = try Protocol_WitnessCreateContract(serializedData: data).toHuman()
-            case .assetIssueContract:
-                humanMap["value"] = try Protocol_AssetIssueContract(serializedData: data).toHuman()
-            case .witnessUpdateContract:
-                humanMap["value"] = try Protocol_WitnessUpdateContract(serializedData: data).toHuman()
-            case .participateAssetIssueContract:
-                humanMap["value"] = try Protocol_ParticipateAssetIssueContract(serializedData: data).toHuman()
-            case .accountUpdateContract:
-                humanMap["value"] = try Protocol_AccountUpdateContract(serializedData: data).toHuman()
-            case .freezeBalanceContract:
-                humanMap["value"] = try Protocol_FreezeBalanceContract(serializedData: data).toHuman()
-            case .unfreezeBalanceContract:
-                humanMap["value"] = try Protocol_UnfreezeBalanceContract(serializedData: data).toHuman()
-            case .withdrawBalanceContract:
-                humanMap["value"] = try Protocol_WithdrawBalanceContract(serializedData: data).toHuman()
-            case .unfreezeAssetContract:
-                humanMap["value"] = try Protocol_UnfreezeAssetContract(serializedData: data).toHuman()
-            case .updateAssetContract:
-                humanMap["value"] = try Protocol_UpdateAssetContract(serializedData: data).toHuman()
-            case .proposalCreateContract:
-                humanMap["value"] = try Protocol_ProposalCreateContract(serializedData: data).toHuman()
-            case .proposalApproveContract:
-                humanMap["value"] = try Protocol_ProposalApproveContract(serializedData: data).toHuman()
-            case .proposalDeleteContract:
-                humanMap["value"] = try Protocol_ProposalDeleteContract(serializedData: data).toHuman()
-            case .setAccountIDContract:
-                humanMap["value"] = try Protocol_SetAccountIdContract(serializedData: data).toHuman()
-            case .createSmartContract:
-                humanMap["value"] = try Protocol_CreateSmartContract(serializedData: data).toHuman()
-            case .triggerSmartContract:
-                humanMap["value"] = try Protocol_TriggerSmartContract(serializedData: data).toHuman()
-            case .updateSettingContract:
-                humanMap["value"] = try Protocol_UpdateSettingContract(serializedData: data).toHuman()
-            case .exchangeCreateContract:
-                humanMap["value"] = try Protocol_ExchangeCreateContract(serializedData: data).toHuman()
-            case .exchangeInjectContract:
-                humanMap["value"] = try Protocol_ExchangeInjectContract(serializedData: data).toHuman()
-            case .exchangeWithdrawContract:
-                humanMap["value"] = try Protocol_ExchangeWithdrawContract(serializedData: data).toHuman()
-            case .exchangeTransactionContract:
-                humanMap["value"] = try Protocol_ExchangeTransactionContract(serializedData: data).toHuman()
-            case .updateEnergyLimitContract:
-                humanMap["value"] = try Protocol_UpdateEnergyLimitContract(serializedData: data).toHuman()
-            case .accountPermissionUpdateContract:
-                humanMap["value"] = try Protocol_AccountPermissionUpdateContract(serializedData: data).toHuman()
-            case .clearAbicontract:
-                humanMap["value"] = try Protocol_ClearABIContract(serializedData: data).toHuman()
-            case .updateBrokerageContract:
-                humanMap["value"] = try Protocol_UpdateBrokerageContract(serializedData: data).toHuman()
-            case .shieldedTransferContract:
-                humanMap["value"] = try Protocol_ShieldedTransferContract(serializedData: data).toHuman()
-            case .marketSellAssetContract:
-                humanMap["value"] = try Protocol_MarketSellAssetContract(serializedData: data).toHuman()
-            case .marketCancelOrderContract:
-                humanMap["value"] = try Protocol_MarketCancelOrderContract(serializedData: data).toHuman()
-            default:
+            
+            if let messageType = types.filter({contract.parameter.typeURL.hasSuffix($0.protoMessageName)}).first {
+                let message = try messageType.init(serializedData: data)
+                humanMap["value"] = try (message as? TronHumanDecodable)?.toHuman() ?? [:]
+            } else {
                 humanMap["value"] = [:]
             }
             humanList.append(humanMap)
