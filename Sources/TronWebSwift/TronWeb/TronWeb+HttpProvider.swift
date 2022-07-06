@@ -28,7 +28,7 @@ extension TronWebHttpProvider {
         var task: URLSessionTask? = nil
         queue.async {
             let url = providerURL.appendingQueryParameters(parameters)
-//            debugPrint("GET \(url)")
+            debugPrint("GET \(url)")
             var urlRequest = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData)
             urlRequest.httpMethod = "GET"
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -50,7 +50,7 @@ extension TronWebHttpProvider {
         return rp.promise.ensure(on: queue) {
                 task = nil
             }.map(on: queue){ (data: Data) throws -> K in
-//                debugPrint(String(data: data, encoding: .utf8) ?? "")
+                debugPrint(String(data: data, encoding: .utf8) ?? "")
                 if let errResp = try? JSONDecoder().decode(TronWebResponse.Error.self, from: data) {
                     throw TronWebError.processingError(desc: errResp.error)
                 }

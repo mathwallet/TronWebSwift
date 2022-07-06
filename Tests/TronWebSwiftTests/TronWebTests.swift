@@ -18,6 +18,21 @@ class TronWebTests: XCTestCase {
         debugPrint(try TronSigner.generate())
     }
     
+    func testGetChainParameterExample() throws {
+        let reqeustExpectation = expectation(description: "testReqeust")
+        
+        DispatchQueue.global().async {
+            do {
+                let resp = try self.provider.getChainParameters().wait()
+                debugPrint(resp)
+                reqeustExpectation.fulfill()
+            } catch _ {
+                reqeustExpectation.fulfill()
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
+    
     func testContractsExample() throws {
         let reqeustExpectation = expectation(description: "testReqeust")
         
@@ -127,5 +142,20 @@ class TronWebTests: XCTestCase {
         let human = try tx.toHuman()
         debugPrint(human)
     }
-
+    
+    func testGetAccountResourceExample() throws {
+        let reqeustExpectation = expectation(description: "testReqeust")
+        
+        DispatchQueue.global().async {
+            do {
+                let ownerAddress = TronAddress("TVrXFXRHZtJaEWAgr5h5LChCLFWe2WjaiB")!
+                let resp = try self.provider.getAccountResource(ownerAddress).wait()
+                debugPrint(resp)
+                reqeustExpectation.fulfill()
+            } catch _ {
+                reqeustExpectation.fulfill()
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
 }

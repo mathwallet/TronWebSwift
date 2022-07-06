@@ -8,8 +8,10 @@
 import Foundation
 
 public enum TronWebRequestType: String {
-    case getAccount
+    case getChainParameters
     case getNowBlock
+    case getAccount
+    case getAccountResource
     case createTransaction
     case transferAsset
     case triggerSmartContract
@@ -18,10 +20,14 @@ public enum TronWebRequestType: String {
     
     var path: String {
         switch self {
-        case .getAccount:
-            return "/wallet/getaccount"
+        case .getChainParameters:
+            return "/wallet/getchainparameters"
         case .getNowBlock:
             return "/wallet/getnowblock"
+        case .getAccount:
+            return "/wallet/getaccount"
+        case .getAccountResource:
+            return "/wallet/getaccountresource"
         case .createTransaction:
             return "/wallet/createtransaction"
         case .transferAsset:
@@ -98,10 +104,39 @@ public struct TronTransactionSendingResult: Decodable {
     }
 }
 
-
 public struct Protocol_Asset: Decodable {
     public var key: String
     public var value: Int64
+}
+
+extension Protocol_ChainParameters.ChainParameter: Decodable{
+    enum CodingKeys: String, CodingKey {
+        case key
+        case value
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.key = try container.decode(String.self, forKey: .key)
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .value) {
+            self.value = rawValue
+        }
+    }
+}
+
+extension Protocol_ChainParameters: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case chainParameter
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        if let rawValue = try? container.decodeIfPresent([Protocol_ChainParameters.ChainParameter].self, forKey: .chainParameter) {
+            self.chainParameter = rawValue
+        }
+    }
 }
 
 extension Protocol_Vote: Decodable {
@@ -183,6 +218,77 @@ extension Protocol_Account: Decodable {
         }
         if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .allowance) {
             self.allowance =  rawValue
+        }
+    }
+}
+
+
+extension Protocol_AccountResourceMessage: Decodable {
+    private enum CodingKeys: String, CodingKey {
+        case freeNetUsed
+        case freeNetLimit
+        case netUsed = "NetUsed"
+        case netLimit = "NetLimit"
+        case assetNetUsed
+        case assetNetLimit
+        case totalNetLimit = "TotalNetLimit"
+        case totalNetWeight = "TotalNetWeight"
+        case tronPowerLimit
+        case energyUsed = "EnergyUsed"
+        case energyLimit = "EnergyLimit"
+        case totalEnergyLimit = "TotalEnergyLimit"
+        case totalEnergyWeight = "TotalEnergyWeight"
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .freeNetUsed) {
+            self.freeNetUsed =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .freeNetLimit) {
+            self.freeNetLimit =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .netUsed) {
+            self.netUsed =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .netLimit) {
+            self.netLimit =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent([Protocol_Asset].self, forKey: .assetNetUsed) {
+            var assetDict: [String: Int64] = [:]
+            rawValue.forEach {
+                assetDict[$0.key] = $0.value
+            }
+            self.assetNetUsed = assetDict
+        }
+        if let rawValue = try? container.decodeIfPresent([Protocol_Asset].self, forKey: .assetNetLimit) {
+            var assetDict: [String: Int64] = [:]
+            rawValue.forEach {
+                assetDict[$0.key] = $0.value
+            }
+            self.assetNetLimit = assetDict
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .totalNetLimit) {
+            self.totalNetLimit =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .totalNetWeight) {
+            self.totalNetWeight =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .tronPowerLimit) {
+            self.tronPowerLimit =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .energyUsed) {
+            self.energyUsed =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .energyLimit) {
+            self.energyLimit =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .totalEnergyLimit) {
+            self.totalEnergyLimit =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .totalEnergyWeight) {
+            self.totalEnergyWeight =  rawValue
         }
     }
 }
