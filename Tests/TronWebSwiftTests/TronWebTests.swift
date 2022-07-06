@@ -33,6 +33,38 @@ class TronWebTests: XCTestCase {
         wait(for: [reqeustExpectation], timeout: 30)
     }
     
+    func testGetAccountExample() throws {
+        let reqeustExpectation = expectation(description: "testReqeust")
+        
+        DispatchQueue.global().async {
+            do {
+                let ownerAddress = TronAddress("TSCDnDiJfrLB4yGDzcC8F6vvtNvPAjyerZ")!
+                let resp = try self.provider.getAccount(ownerAddress).wait()
+                debugPrint(resp)
+                reqeustExpectation.fulfill()
+            } catch _ {
+                reqeustExpectation.fulfill()
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
+    
+    func testGetAccountResourceExample() throws {
+        let reqeustExpectation = expectation(description: "testReqeust")
+        
+        DispatchQueue.global().async {
+            do {
+                let ownerAddress = TronAddress("TVrXFXRHZtJaEWAgr5h5LChCLFWe2WjaiB")!
+                let resp = try self.provider.getAccountResource(ownerAddress).wait()
+                debugPrint(resp)
+                reqeustExpectation.fulfill()
+            } catch _ {
+                reqeustExpectation.fulfill()
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
+    
     func testContractsExample() throws {
         let reqeustExpectation = expectation(description: "testReqeust")
         
@@ -141,21 +173,5 @@ class TronWebTests: XCTestCase {
         }
         let human = try tx.toHuman()
         debugPrint(human)
-    }
-    
-    func testGetAccountResourceExample() throws {
-        let reqeustExpectation = expectation(description: "testReqeust")
-        
-        DispatchQueue.global().async {
-            do {
-                let ownerAddress = TronAddress("TVrXFXRHZtJaEWAgr5h5LChCLFWe2WjaiB")!
-                let resp = try self.provider.getAccountResource(ownerAddress).wait()
-                debugPrint(resp)
-                reqeustExpectation.fulfill()
-            } catch _ {
-                reqeustExpectation.fulfill()
-            }
-        }
-        wait(for: [reqeustExpectation], timeout: 30)
     }
 }

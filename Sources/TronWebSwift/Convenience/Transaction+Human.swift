@@ -183,7 +183,7 @@ extension Protocol_FreezeBalanceContract: TronHumanDecodable {
         return [
             "ownerAddress": TronAddress(ownerAddress)?.address ?? "",
             "receiverAddress": TronAddress(receiverAddress)?.address ?? "",
-            "frozenBalance": frozenBalance,
+            "frozenBalance": TronHumanToken.MAIN.formatString(amount: frozenBalance),
             "frozenDuration": frozenDuration,
             "resource": resource.desc
         ]

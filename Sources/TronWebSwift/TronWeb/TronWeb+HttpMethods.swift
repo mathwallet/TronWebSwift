@@ -165,6 +165,24 @@ extension Protocol_Account.Frozen: Decodable {
     }
 }
 
+extension Protocol_Account.AccountResource: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case frozenBalanceForEnergy = "frozen_balance_for_energy"
+        case latestConsumeTimeForEnergy = "latest_consume_time_for_energy"
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        if let rawValue = try? container.decodeIfPresent(Protocol_Account.Frozen.self, forKey: .frozenBalanceForEnergy) {
+            self.frozenBalanceForEnergy =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .latestConsumeTimeForEnergy) {
+            self.latestConsumeTimeForEnergy =  rawValue
+        }
+    }
+}
+
 extension Protocol_Account: Decodable {
     private enum CodingKeys: String, CodingKey {
         case address
@@ -175,9 +193,11 @@ extension Protocol_Account: Decodable {
         case votes
         case frozen
         case netUsage = "net_usage"
+        case freeNetUsage = "free_net_usage"
         case createTime = "create_time"
         case latestOprationTime = "latest_opration_time"
         case allowance
+        case accountResource = "account_resource"
     }
     
     public init(from decoder: Decoder) throws {
@@ -212,12 +232,18 @@ extension Protocol_Account: Decodable {
         if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .netUsage) {
             self.netUsage =  rawValue
         }
+        if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .freeNetUsage) {
+            self.freeNetUsage =  rawValue
+        }
         self.createTime = try container.decode(Int64.self, forKey: .createTime)
         if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .latestOprationTime) {
             self.latestOprationTime =  rawValue
         }
         if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .allowance) {
             self.allowance =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent(Protocol_Account.AccountResource.self, forKey: .accountResource) {
+            self.accountResource =  rawValue
         }
     }
 }
