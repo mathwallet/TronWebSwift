@@ -148,6 +148,35 @@ class TronWebTests: XCTestCase {
         wait(for: [reqeustExpectation], timeout: 30)
     }
     
+    func testEstimateEnergyExample() throws {
+        let reqeustExpectation = expectation(description: "testReqeust")
+        
+        DispatchQueue.global().async {
+            do {
+                let toAddress = TronAddress("TVrXFXRHZtJaEWAgr5h5LChCLFWe2WjaiB")!
+                let contractAddress = TronAddress("TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8")
+                
+                guard let c = self.tronWeb.contract(TronWeb.Utils.trc20ABI, at: contractAddress) else {
+                    reqeustExpectation.fulfill()
+                    return
+                }
+                
+                var opts = TronTransactionOptions.defaultOptions
+                opts.ownerAddress = TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!
+                
+                let parameters = [toAddress, BigUInt(100)] as [AnyObject]
+                let response = try c.estimateEnergy("transfer", parameters: parameters, transactionOptions: opts).wait()
+                debugPrint(response)
+                
+                reqeustExpectation.fulfill()
+            } catch let error {
+                debugPrint(error.localizedDescription)
+                reqeustExpectation.fulfill()
+            }
+        }
+        wait(for: [reqeustExpectation], timeout: 30)
+    }
+    
     func testBuildTransactionExample() throws {
         let reqeustExpectation = expectation(description: "testReqeust")
         

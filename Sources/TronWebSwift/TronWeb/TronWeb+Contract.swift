@@ -32,7 +32,7 @@ extension TronWeb {
             return Promise { resolver in
                 let opts = transactionOptions ?? self.transactionOptions
                 guard let request = contract.method(method, parameters: parameters, transactionOptions: opts) else {
-                    resolver.reject(TronWebError.processingError(desc: "Contract writing error."))
+                    resolver.reject(TronWebError.processingError(desc: "Invalid Contract."))
                     return
                 }
                 let txEx = try self.provider.triggerSmartContract(request).wait()
@@ -59,7 +59,7 @@ extension TronWeb {
             return Promise { resolver in
                 let opts = transactionOptions ?? self.transactionOptions
                 guard let request = contract.method(method, parameters: parameters, transactionOptions: opts) else {
-                    resolver.reject(TronWebError.processingError(desc: "Contract read error."))
+                    resolver.reject(TronWebError.processingError(desc: "Invalid Contract."))
                     return
                 }
                 let res = try self.provider.triggerConstantContract(request).wait()
@@ -70,5 +70,18 @@ extension TronWeb {
                 }
             }
         }
+        
+        public func estimateEnergy(_ method: String, parameters: [AnyObject] = [AnyObject](), transactionOptions: TronTransactionOptions? = nil) -> Promise<BigUInt> {
+            return Promise { resolver in
+                let opts = transactionOptions ?? self.transactionOptions
+                guard let request = contract.method(method, parameters: parameters, transactionOptions: opts) else {
+                    resolver.reject(TronWebError.processingError(desc: "Invalid Contract."))
+                    return
+                }
+                let res = try self.provider.triggerConstantContract(request).wait()
+                resolver.fulfill(BigUInt(res.energyUsed))
+            }
+        }
+        
     }
 }
