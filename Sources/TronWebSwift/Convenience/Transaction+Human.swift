@@ -163,7 +163,7 @@ extension Protocol_ParticipateAssetIssueContract: TronHumanDecodable {
         return [
             "ownerAddress": TronAddress(ownerAddress)?.address ?? "",
             "toAddress": TronAddress(toAddress)?.address ?? "",
-            "url": String(data: assetName, encoding: .utf8) ?? "",
+            "assetName": String(data: assetName, encoding: .utf8) ?? "",
             "amount": amount
         ]
     }
