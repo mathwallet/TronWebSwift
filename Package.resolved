@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "Base58Swift",
+        "repositoryURL": "https://github.com/mathwallet/Base58Swift.git",
+        "state": {
+          "branch": null,
+          "revision": "04ccae070ac6f3117db11af864a04229f7c1e025",
+          "version": "0.0.1"
+        }
+      },
+      {
         "package": "BigInt",
         "repositoryURL": "https://github.com/attaswift/BigInt.git",
         "state": {
@@ -29,12 +38,21 @@
         }
       },
       {
+        "package": "RIPEMDSwift",
+        "repositoryURL": "https://github.com/mathwallet/RIPEMDSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "1a9b1487d1880585c8cc46e26b6d9838184f7858",
+          "version": "0.0.1"
+        }
+      },
+      {
         "package": "Secp256k1Swift",
         "repositoryURL": "https://github.com/mathwallet/Secp256k1Swift.git",
         "state": {
           "branch": null,
-          "revision": "318da87a951ba585a3b82a3c757e2f2ee0f8b9b7",
-          "version": "1.2.6"
+          "revision": "56bc47725ea218127c47b20e0d9bc93f7a01f923",
+          "version": "1.3.1"
         }
       },
       {
