@@ -107,5 +107,17 @@ public struct TronContract: TronContractProtocol {
         guard case .function(_) = function else {return nil}
         return function.decodeReturnData(data)
     }
+    
+    public func decodeMethodData(_ data: Data) -> (method: String, inputs: [String : Any]?)? {
+        guard data.count >= 4 else { return nil }
+        let methods = methods.compactMap { (_, value) in
+            if case .function(let f) = value, f.methodEncoding == data.subdata(in: 0..<4) {
+                return (f.signature, value)
+            }
+            return nil
+        }
+        guard let method = methods.first else { return nil }
+        return (method.0, method.1.decodeInputData(data) ?? [:])
+    }
 }
 

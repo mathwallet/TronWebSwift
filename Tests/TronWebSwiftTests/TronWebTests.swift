@@ -204,15 +204,10 @@ class TronWebTests: XCTestCase {
         debugPrint(human)
     }
     
-    func testDecodeInputDataExample() throws {
+    func testDecodeMethodDataExample() throws {
         guard let tronContract = TronContract(TronWeb.Utils.trc20ABI, at: nil) else { return }
-        let method = "transfer"
-        guard let function = tronContract.methods[method] else { return }
-        guard case .function(_) = function else { return}
-        // a9059cbb
-        // 00000000000000000000004141a768c9797b8b1a1d41d25ba603f68326fcfc40
-        // 00000000000000000000000000000000000000000000000000000000000186a0
-        let returns = function.decodeInputData(Data(hex: "a9059cbb00000000000000000000004141a768c9797b8b1a1d41d25ba603f68326fcfc4000000000000000000000000000000000000000000000000000000000000186a0"))
-        debugPrint(returns ?? [:])
+        let returns = tronContract.decodeMethodData(Data(hex: "a9059cbb00000000000000000000004141a768c9797b8b1a1d41d25ba603f68326fcfc4000000000000000000000000000000000000000000000000000000000000186a0"))
+        XCTAssertTrue(returns?.method == "transfer(address,uint256)")
+        XCTAssertTrue(returns?.inputs?["_value"] as? BigUInt == BigUInt("100000"))
     }
 }
