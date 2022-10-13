@@ -57,7 +57,7 @@ extension TronABIDecoder {
         case .address:
             //            print("Address element itself: \n" + elementItself.toHexString())
             guard elementItself.count >= 32 else {break}
-            let dataSlice = elementItself[11 ..< 32]
+            let dataSlice = Data([TronAddress.addressPrefix]) + elementItself[12 ..< 32]
             let address = TronAddress(dataSlice)
             //            print("Address element is: \n" + String(address.address))
             return (address as AnyObject, type.memoryUsage)
