@@ -200,6 +200,16 @@ extension Protocol_UnfreezeBalanceContract: TronHumanDecodable {
     }
 }
 
+extension Protocol_FreezeBalanceV2Contract: TronHumanDecodable {
+    public func toHuman() throws -> [String : Any] {
+        return [
+            "ownerAddress": TronAddress(ownerAddress)?.address ?? "",
+            "frozenBalance": TronHumanToken.MAIN.formatString(amount: frozenBalance),
+            "resource": resource.desc
+        ]
+    }
+}
+
 extension Protocol_WithdrawBalanceContract: TronHumanDecodable {
     public func toHuman() throws -> [String : Any] {
         return [
