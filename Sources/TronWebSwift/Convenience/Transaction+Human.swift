@@ -521,6 +521,8 @@ extension Protocol_Transaction {
             Protocol_AccountUpdateContract.self,
             Protocol_FreezeBalanceContract.self,
             Protocol_UnfreezeBalanceContract.self,
+            Protocol_FreezeBalanceV2Contract.self,
+            Protocol_UnfreezeBalanceV2Contract.self,
             Protocol_WithdrawBalanceContract.self,
             Protocol_UnfreezeAssetContract.self,
             Protocol_UpdateAssetContract.self,
