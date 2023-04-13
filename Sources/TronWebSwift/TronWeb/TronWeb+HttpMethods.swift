@@ -165,6 +165,30 @@ extension Protocol_Account.Frozen: Decodable {
     }
 }
 
+extension Protocol_Account.FreezeV2: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case amount
+        case type
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let rawValue = try container.decodeIfPresent(String.self, forKey: .type) {
+            switch rawValue {
+            case "ENERGY":
+                self.type = Protocol_ResourceCode.energy
+            case "TRON_POWER":
+                self.type = Protocol_ResourceCode.tronPower
+            default:
+                self.type = Protocol_ResourceCode.bandwidth
+            }
+        } else {
+            self.type = Protocol_ResourceCode.bandwidth
+        }
+        self.amount = try container.decodeIfPresent(Int64.self, forKey: .amount) ?? 0
+    }
+}
+
 extension Protocol_Account.AccountResource: Decodable {
     enum CodingKeys: String, CodingKey {
         case frozenBalanceForEnergy = "frozen_balance_for_energy"
@@ -192,6 +216,7 @@ extension Protocol_Account: Decodable {
         case assetV2
         case votes
         case frozen
+        case frozenV2
         case netUsage = "net_usage"
         case freeNetUsage = "free_net_usage"
         case createTime = "create_time"
@@ -228,6 +253,9 @@ extension Protocol_Account: Decodable {
         }
         if let rawValue = try? container.decodeIfPresent([Protocol_Account.Frozen].self, forKey: .frozen) {
             self.frozen =  rawValue
+        }
+        if let rawValue = try? container.decodeIfPresent([Protocol_Account.FreezeV2].self, forKey: .frozenV2) {
+            self.frozenV2 =  rawValue
         }
         if let rawValue = try? container.decodeIfPresent(Int64.self, forKey: .netUsage) {
             self.netUsage =  rawValue

@@ -38,7 +38,7 @@ class TronWebTests: XCTestCase {
         
         DispatchQueue.global().async {
             do {
-                let ownerAddress = TronAddress("TSCDnDiJfrLB4yGDzcC8F6vvtNvPAjyerZ")!
+                let ownerAddress = TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!
                 let resp = try self.provider.getAccount(ownerAddress).wait()
                 debugPrint(resp)
                 reqeustExpectation.fulfill()
@@ -54,7 +54,7 @@ class TronWebTests: XCTestCase {
         
         DispatchQueue.global().async {
             do {
-                let ownerAddress = TronAddress("TVrXFXRHZtJaEWAgr5h5LChCLFWe2WjaiB")!
+                let ownerAddress = TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!
                 let resp = try self.provider.getAccountResource(ownerAddress).wait()
                 debugPrint(resp)
                 reqeustExpectation.fulfill()

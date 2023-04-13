@@ -224,6 +224,22 @@ extension Protocol_SmartContract.ABI.Entry.StateMutabilityType: CaseIterable {
 
 #endif  // swift(>=4.2)
 
+public struct Protocol_ContractState {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var energyUsage: Int64 = 0
+
+  public var energyFactor: Int64 = 0
+
+  public var updateCycle: Int64 = 0
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
 public struct Protocol_CreateSmartContract {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -335,11 +351,21 @@ public struct Protocol_SmartContractDataWrapper {
 
   public var runtimecode: Data = Data()
 
+  public var contractState: Protocol_ContractState {
+    get {return _contractState ?? Protocol_ContractState()}
+    set {_contractState = newValue}
+  }
+  /// Returns true if `contractState` has been explicitly set.
+  public var hasContractState: Bool {return self._contractState != nil}
+  /// Clears the value of `contractState`. Subsequent reads from it will return its default value.
+  public mutating func clearContractState() {self._contractState = nil}
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
 
   fileprivate var _smartContract: Protocol_SmartContract? = nil
+  fileprivate var _contractState: Protocol_ContractState? = nil
 }
 
 #if swift(>=5.5) && canImport(_Concurrency)
@@ -349,6 +375,7 @@ extension Protocol_SmartContract.ABI.Entry: @unchecked Sendable {}
 extension Protocol_SmartContract.ABI.Entry.EntryType: @unchecked Sendable {}
 extension Protocol_SmartContract.ABI.Entry.StateMutabilityType: @unchecked Sendable {}
 extension Protocol_SmartContract.ABI.Entry.Param: @unchecked Sendable {}
+extension Protocol_ContractState: @unchecked Sendable {}
 extension Protocol_CreateSmartContract: @unchecked Sendable {}
 extension Protocol_TriggerSmartContract: @unchecked Sendable {}
 extension Protocol_ClearABIContract: @unchecked Sendable {}
@@ -629,6 +656,50 @@ extension Protocol_SmartContract.ABI.Entry.Param: SwiftProtobuf.Message, SwiftPr
   }
 }
 
+extension Protocol_ContractState: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".ContractState"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "energy_usage"),
+    2: .standard(proto: "energy_factor"),
+    3: .standard(proto: "update_cycle"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt64Field(value: &self.energyUsage) }()
+      case 2: try { try decoder.decodeSingularInt64Field(value: &self.energyFactor) }()
+      case 3: try { try decoder.decodeSingularInt64Field(value: &self.updateCycle) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.energyUsage != 0 {
+      try visitor.visitSingularInt64Field(value: self.energyUsage, fieldNumber: 1)
+    }
+    if self.energyFactor != 0 {
+      try visitor.visitSingularInt64Field(value: self.energyFactor, fieldNumber: 2)
+    }
+    if self.updateCycle != 0 {
+      try visitor.visitSingularInt64Field(value: self.updateCycle, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Protocol_ContractState, rhs: Protocol_ContractState) -> Bool {
+    if lhs.energyUsage != rhs.energyUsage {return false}
+    if lhs.energyFactor != rhs.energyFactor {return false}
+    if lhs.updateCycle != rhs.updateCycle {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Protocol_CreateSmartContract: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".CreateSmartContract"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -876,6 +947,7 @@ extension Protocol_SmartContractDataWrapper: SwiftProtobuf.Message, SwiftProtobu
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .standard(proto: "smart_contract"),
     2: .same(proto: "runtimecode"),
+    3: .standard(proto: "contract_state"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -886,6 +958,7 @@ extension Protocol_SmartContractDataWrapper: SwiftProtobuf.Message, SwiftProtobu
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularMessageField(value: &self._smartContract) }()
       case 2: try { try decoder.decodeSingularBytesField(value: &self.runtimecode) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._contractState) }()
       default: break
       }
     }
@@ -902,12 +975,16 @@ extension Protocol_SmartContractDataWrapper: SwiftProtobuf.Message, SwiftProtobu
     if !self.runtimecode.isEmpty {
       try visitor.visitSingularBytesField(value: self.runtimecode, fieldNumber: 2)
     }
+    try { if let v = self._contractState {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   public static func ==(lhs: Protocol_SmartContractDataWrapper, rhs: Protocol_SmartContractDataWrapper) -> Bool {
     if lhs._smartContract != rhs._smartContract {return false}
     if lhs.runtimecode != rhs.runtimecode {return false}
+    if lhs._contractState != rhs._contractState {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

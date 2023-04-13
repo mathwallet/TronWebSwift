@@ -71,7 +71,7 @@ public enum Protocol_ReasonCode: SwiftProtobuf.Enum {
   case tooManyPeers // = 4
   case duplicatePeer // = 5
   case incompatibleProtocol // = 6
-  case nullIdentity // = 7
+  case randomElimination // = 7
   case peerQuiting // = 8
   case unexpectedIdentity // = 9
   case localIdentity // = 10
@@ -89,6 +89,7 @@ public enum Protocol_ReasonCode: SwiftProtobuf.Enum {
   case timeOut // = 32
   case connectFail // = 33
   case tooManyPeersWithSameIp // = 34
+  case lightNodeSyncFail // = 35
   case unknown // = 255
   case UNRECOGNIZED(Int)
 
@@ -103,7 +104,7 @@ public enum Protocol_ReasonCode: SwiftProtobuf.Enum {
     case 4: self = .tooManyPeers
     case 5: self = .duplicatePeer
     case 6: self = .incompatibleProtocol
-    case 7: self = .nullIdentity
+    case 7: self = .randomElimination
     case 8: self = .peerQuiting
     case 9: self = .unexpectedIdentity
     case 10: self = .localIdentity
@@ -121,6 +122,7 @@ public enum Protocol_ReasonCode: SwiftProtobuf.Enum {
     case 32: self = .timeOut
     case 33: self = .connectFail
     case 34: self = .tooManyPeersWithSameIp
+    case 35: self = .lightNodeSyncFail
     case 255: self = .unknown
     default: self = .UNRECOGNIZED(rawValue)
     }
@@ -133,7 +135,7 @@ public enum Protocol_ReasonCode: SwiftProtobuf.Enum {
     case .tooManyPeers: return 4
     case .duplicatePeer: return 5
     case .incompatibleProtocol: return 6
-    case .nullIdentity: return 7
+    case .randomElimination: return 7
     case .peerQuiting: return 8
     case .unexpectedIdentity: return 9
     case .localIdentity: return 10
@@ -151,6 +153,7 @@ public enum Protocol_ReasonCode: SwiftProtobuf.Enum {
     case .timeOut: return 32
     case .connectFail: return 33
     case .tooManyPeersWithSameIp: return 34
+    case .lightNodeSyncFail: return 35
     case .unknown: return 255
     case .UNRECOGNIZED(let i): return i
     }
@@ -168,7 +171,7 @@ extension Protocol_ReasonCode: CaseIterable {
     .tooManyPeers,
     .duplicatePeer,
     .incompatibleProtocol,
-    .nullIdentity,
+    .randomElimination,
     .peerQuiting,
     .unexpectedIdentity,
     .localIdentity,
@@ -186,6 +189,7 @@ extension Protocol_ReasonCode: CaseIterable {
     .timeOut,
     .connectFail,
     .tooManyPeersWithSameIp,
+    .lightNodeSyncFail,
     .unknown,
   ]
 }
@@ -617,6 +621,11 @@ public struct Protocol_Account {
   /// Clears the value of `tronPower`. Subsequent reads from it will return its default value.
   public mutating func clearTronPower() {_uniqueStorage()._tronPower = nil}
 
+  public var assetOptimized: Bool {
+    get {return _storage._assetOptimized}
+    set {_uniqueStorage()._assetOptimized = newValue}
+  }
+
   /// this account create time
   public var createTime: Int64 {
     get {return _storage._createTime}
@@ -715,6 +724,11 @@ public struct Protocol_Account {
     set {_uniqueStorage()._accountID = newValue}
   }
 
+  public var netWindowSize: Int64 {
+    get {return _storage._netWindowSize}
+    set {_uniqueStorage()._netWindowSize = newValue}
+  }
+
   public var accountResource: Protocol_Account.AccountResource {
     get {return _storage._accountResource ?? Protocol_Account.AccountResource()}
     set {_uniqueStorage()._accountResource = newValue}
@@ -750,6 +764,26 @@ public struct Protocol_Account {
   public var activePermission: [Protocol_Permission] {
     get {return _storage._activePermission}
     set {_uniqueStorage()._activePermission = newValue}
+  }
+
+  public var frozenV2: [Protocol_Account.FreezeV2] {
+    get {return _storage._frozenV2}
+    set {_uniqueStorage()._frozenV2 = newValue}
+  }
+
+  public var unfrozenV2: [Protocol_Account.UnFreezeV2] {
+    get {return _storage._unfrozenV2}
+    set {_uniqueStorage()._unfrozenV2 = newValue}
+  }
+
+  public var delegatedFrozenV2BalanceForBandwidth: Int64 {
+    get {return _storage._delegatedFrozenV2BalanceForBandwidth}
+    set {_uniqueStorage()._delegatedFrozenV2BalanceForBandwidth = newValue}
+  }
+
+  public var acquiredDelegatedFrozenV2BalanceForBandwidth: Int64 {
+    get {return _storage._acquiredDelegatedFrozenV2BalanceForBandwidth}
+    set {_uniqueStorage()._acquiredDelegatedFrozenV2BalanceForBandwidth = newValue}
   }
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
@@ -804,6 +838,12 @@ public struct Protocol_Account {
 
     public var latestExchangeStorageTime: Int64 = 0
 
+    public var energyWindowSize: Int64 = 0
+
+    public var delegatedFrozenV2BalanceForEnergy: Int64 = 0
+
+    public var acquiredDelegatedFrozenV2BalanceForEnergy: Int64 = 0
+
     public var unknownFields = SwiftProtobuf.UnknownStorage()
 
     public init() {}
@@ -811,54 +851,30 @@ public struct Protocol_Account {
     fileprivate var _frozenBalanceForEnergy: Protocol_Account.Frozen? = nil
   }
 
-  public init() {}
-
-  fileprivate var _storage = _StorageClass.defaultInstance
-}
-
-/// AccountAsset 
-public struct Protocol_AccountAsset {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  /// the create address
-  public var address: Data = Data()
-
-  /// the other asset owned by this account
-  public var asset: Dictionary<String,Int64> = [:]
-
-  /// the other asset owned by this account，key is assetId
-  public var assetV2: Dictionary<String,Int64> = [:]
-
-  public var assetIssuedName: Data = Data()
-
-  public var assetIssuedID: Data = Data()
-
-  public var latestAssetOperationTime: Dictionary<String,Int64> = [:]
-
-  public var latestAssetOperationTimeV2: Dictionary<String,Int64> = [:]
-
-  public var freeAssetNetUsage: Dictionary<String,Int64> = [:]
-
-  public var freeAssetNetUsageV2: Dictionary<String,Int64> = [:]
-
-  /// frozen asset(for asset issuer)
-  public var frozenSupply: [Protocol_AccountAsset.Frozen] = []
-
-  public var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  /// frozen balance 
-  public struct Frozen {
+  public struct FreezeV2 {
     // SwiftProtobuf.Message conformance is added in an extension below. See the
     // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
     // methods supported on all messages.
 
-    /// the frozen trx balance
-    public var frozenBalance: Int64 = 0
+    public var type: Protocol_ResourceCode = .bandwidth
 
-    /// the expire time
-    public var expireTime: Int64 = 0
+    public var amount: Int64 = 0
+
+    public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    public init() {}
+  }
+
+  public struct UnFreezeV2 {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+
+    public var type: Protocol_ResourceCode = .bandwidth
+
+    public var unfreezeAmount: Int64 = 0
+
+    public var unfreezeExpireTime: Int64 = 0
 
     public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -866,6 +882,8 @@ public struct Protocol_AccountAsset {
   }
 
   public init() {}
+
+  fileprivate var _storage = _StorageClass.defaultInstance
 }
 
 public struct Protocol_Key {
@@ -1127,6 +1145,8 @@ public struct Protocol_ResourceReceipt {
 
   public var result: Protocol_Transaction.Result.contractResult = .default
 
+  public var energyPenaltyTotal: Int64 = 0
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -1232,6 +1252,11 @@ public struct Protocol_Transaction {
       case shieldedTransferContract // = 51
       case marketSellAssetContract // = 52
       case marketCancelOrderContract // = 53
+      case freezeBalanceV2Contract // = 54
+      case unfreezeBalanceV2Contract // = 55
+      case withdrawExpireUnfreezeContract // = 56
+      case delegateResourceContract // = 57
+      case unDelegateResourceContract // = 58
       case UNRECOGNIZED(Int)
 
       public init() {
@@ -1275,6 +1300,11 @@ public struct Protocol_Transaction {
         case 51: self = .shieldedTransferContract
         case 52: self = .marketSellAssetContract
         case 53: self = .marketCancelOrderContract
+        case 54: self = .freezeBalanceV2Contract
+        case 55: self = .unfreezeBalanceV2Contract
+        case 56: self = .withdrawExpireUnfreezeContract
+        case 57: self = .delegateResourceContract
+        case 58: self = .unDelegateResourceContract
         default: self = .UNRECOGNIZED(rawValue)
         }
       }
@@ -1316,6 +1346,11 @@ public struct Protocol_Transaction {
         case .shieldedTransferContract: return 51
         case .marketSellAssetContract: return 52
         case .marketCancelOrderContract: return 53
+        case .freezeBalanceV2Contract: return 54
+        case .unfreezeBalanceV2Contract: return 55
+        case .withdrawExpireUnfreezeContract: return 56
+        case .delegateResourceContract: return 57
+        case .unDelegateResourceContract: return 58
         case .UNRECOGNIZED(let i): return i
         }
       }
@@ -1357,6 +1392,8 @@ public struct Protocol_Transaction {
     public var orderID: Data = Data()
 
     public var orderDetails: [Protocol_MarketOrderDetail] = []
+
+    public var withdrawExpireAmount: Int64 = 0
 
     public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -1539,6 +1576,11 @@ extension Protocol_Transaction.Contract.ContractType: CaseIterable {
     .shieldedTransferContract,
     .marketSellAssetContract,
     .marketCancelOrderContract,
+    .freezeBalanceV2Contract,
+    .unfreezeBalanceV2Contract,
+    .withdrawExpireUnfreezeContract,
+    .delegateResourceContract,
+    .unDelegateResourceContract,
   ]
 }
 
@@ -1691,6 +1733,11 @@ public struct Protocol_TransactionInfo {
   public var packingFee: Int64 {
     get {return _storage._packingFee}
     set {_uniqueStorage()._packingFee = newValue}
+  }
+
+  public var withdrawExpireAmount: Int64 {
+    get {return _storage._withdrawExpireAmount}
+    set {_uniqueStorage()._withdrawExpireAmount = newValue}
   }
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
@@ -2177,6 +2224,10 @@ public struct Protocol_HelloMessage {
 
   public var signature: Data = Data()
 
+  public var nodeType: Int32 = 0
+
+  public var lowestBlockNum: Int64 = 0
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public struct BlockId {
@@ -2255,6 +2306,8 @@ public struct Protocol_DelegatedResourceAccountIndex {
   public var fromAccounts: [Data] = []
 
   public var toAccounts: [Data] = []
+
+  public var timestamp: Int64 = 0
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -3283,8 +3336,8 @@ extension Protocol_ChainParameters.ChainParameter: @unchecked Sendable {}
 extension Protocol_Account: @unchecked Sendable {}
 extension Protocol_Account.Frozen: @unchecked Sendable {}
 extension Protocol_Account.AccountResource: @unchecked Sendable {}
-extension Protocol_AccountAsset: @unchecked Sendable {}
-extension Protocol_AccountAsset.Frozen: @unchecked Sendable {}
+extension Protocol_Account.FreezeV2: @unchecked Sendable {}
+extension Protocol_Account.UnFreezeV2: @unchecked Sendable {}
 extension Protocol_Key: @unchecked Sendable {}
 extension Protocol_DelegatedResource: @unchecked Sendable {}
 extension Protocol_authority: @unchecked Sendable {}
@@ -3375,7 +3428,7 @@ extension Protocol_ReasonCode: SwiftProtobuf._ProtoNameProviding {
     4: .same(proto: "TOO_MANY_PEERS"),
     5: .same(proto: "DUPLICATE_PEER"),
     6: .same(proto: "INCOMPATIBLE_PROTOCOL"),
-    7: .same(proto: "NULL_IDENTITY"),
+    7: .same(proto: "RANDOM_ELIMINATION"),
     8: .same(proto: "PEER_QUITING"),
     9: .same(proto: "UNEXPECTED_IDENTITY"),
     10: .same(proto: "LOCAL_IDENTITY"),
@@ -3393,6 +3446,7 @@ extension Protocol_ReasonCode: SwiftProtobuf._ProtoNameProviding {
     32: .same(proto: "TIME_OUT"),
     33: .same(proto: "CONNECT_FAIL"),
     34: .same(proto: "TOO_MANY_PEERS_WITH_SAME_IP"),
+    35: .same(proto: "LIGHT_NODE_SYNC_FAIL"),
     255: .same(proto: "UNKNOWN"),
   ]
 }
@@ -4082,6 +4136,7 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     42: .standard(proto: "delegated_frozen_balance_for_bandwidth"),
     46: .standard(proto: "old_tron_power"),
     47: .standard(proto: "tron_power"),
+    60: .standard(proto: "asset_optimized"),
     9: .standard(proto: "create_time"),
     10: .standard(proto: "latest_opration_time"),
     11: .same(proto: "allowance"),
@@ -4100,11 +4155,16 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     21: .standard(proto: "latest_consume_time"),
     22: .standard(proto: "latest_consume_free_time"),
     23: .standard(proto: "account_id"),
+    24: .standard(proto: "net_window_size"),
     26: .standard(proto: "account_resource"),
     30: .same(proto: "codeHash"),
     31: .standard(proto: "owner_permission"),
     32: .standard(proto: "witness_permission"),
     33: .standard(proto: "active_permission"),
+    34: .same(proto: "frozenV2"),
+    35: .same(proto: "unfrozenV2"),
+    36: .standard(proto: "delegated_frozenV2_balance_for_bandwidth"),
+    37: .standard(proto: "acquired_delegated_frozenV2_balance_for_bandwidth"),
   ]
 
   fileprivate class _StorageClass {
@@ -4121,6 +4181,7 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     var _delegatedFrozenBalanceForBandwidth: Int64 = 0
     var _oldTronPower: Int64 = 0
     var _tronPower: Protocol_Account.Frozen? = nil
+    var _assetOptimized: Bool = false
     var _createTime: Int64 = 0
     var _latestOprationTime: Int64 = 0
     var _allowance: Int64 = 0
@@ -4139,11 +4200,16 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
     var _latestConsumeTime: Int64 = 0
     var _latestConsumeFreeTime: Int64 = 0
     var _accountID: Data = Data()
+    var _netWindowSize: Int64 = 0
     var _accountResource: Protocol_Account.AccountResource? = nil
     var _codeHash: Data = Data()
     var _ownerPermission: Protocol_Permission? = nil
     var _witnessPermission: Protocol_Permission? = nil
     var _activePermission: [Protocol_Permission] = []
+    var _frozenV2: [Protocol_Account.FreezeV2] = []
+    var _unfrozenV2: [Protocol_Account.UnFreezeV2] = []
+    var _delegatedFrozenV2BalanceForBandwidth: Int64 = 0
+    var _acquiredDelegatedFrozenV2BalanceForBandwidth: Int64 = 0
 
     static let defaultInstance = _StorageClass()
 
@@ -4163,6 +4229,7 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       _delegatedFrozenBalanceForBandwidth = source._delegatedFrozenBalanceForBandwidth
       _oldTronPower = source._oldTronPower
       _tronPower = source._tronPower
+      _assetOptimized = source._assetOptimized
       _createTime = source._createTime
       _latestOprationTime = source._latestOprationTime
       _allowance = source._allowance
@@ -4181,11 +4248,16 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       _latestConsumeTime = source._latestConsumeTime
       _latestConsumeFreeTime = source._latestConsumeFreeTime
       _accountID = source._accountID
+      _netWindowSize = source._netWindowSize
       _accountResource = source._accountResource
       _codeHash = source._codeHash
       _ownerPermission = source._ownerPermission
       _witnessPermission = source._witnessPermission
       _activePermission = source._activePermission
+      _frozenV2 = source._frozenV2
+      _unfrozenV2 = source._unfrozenV2
+      _delegatedFrozenV2BalanceForBandwidth = source._delegatedFrozenV2BalanceForBandwidth
+      _acquiredDelegatedFrozenV2BalanceForBandwidth = source._acquiredDelegatedFrozenV2BalanceForBandwidth
     }
   }
 
@@ -4227,11 +4299,16 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
         case 21: try { try decoder.decodeSingularInt64Field(value: &_storage._latestConsumeTime) }()
         case 22: try { try decoder.decodeSingularInt64Field(value: &_storage._latestConsumeFreeTime) }()
         case 23: try { try decoder.decodeSingularBytesField(value: &_storage._accountID) }()
+        case 24: try { try decoder.decodeSingularInt64Field(value: &_storage._netWindowSize) }()
         case 26: try { try decoder.decodeSingularMessageField(value: &_storage._accountResource) }()
         case 30: try { try decoder.decodeSingularBytesField(value: &_storage._codeHash) }()
         case 31: try { try decoder.decodeSingularMessageField(value: &_storage._ownerPermission) }()
         case 32: try { try decoder.decodeSingularMessageField(value: &_storage._witnessPermission) }()
         case 33: try { try decoder.decodeRepeatedMessageField(value: &_storage._activePermission) }()
+        case 34: try { try decoder.decodeRepeatedMessageField(value: &_storage._frozenV2) }()
+        case 35: try { try decoder.decodeRepeatedMessageField(value: &_storage._unfrozenV2) }()
+        case 36: try { try decoder.decodeSingularInt64Field(value: &_storage._delegatedFrozenV2BalanceForBandwidth) }()
+        case 37: try { try decoder.decodeSingularInt64Field(value: &_storage._acquiredDelegatedFrozenV2BalanceForBandwidth) }()
         case 41: try { try decoder.decodeSingularInt64Field(value: &_storage._acquiredDelegatedFrozenBalanceForBandwidth) }()
         case 42: try { try decoder.decodeSingularInt64Field(value: &_storage._delegatedFrozenBalanceForBandwidth) }()
         case 46: try { try decoder.decodeSingularInt64Field(value: &_storage._oldTronPower) }()
@@ -4240,6 +4317,7 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
         case 57: try { try decoder.decodeSingularBytesField(value: &_storage._assetIssuedID) }()
         case 58: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: &_storage._latestAssetOperationTimeV2) }()
         case 59: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: &_storage._freeAssetNetUsageV2) }()
+        case 60: try { try decoder.decodeSingularBoolField(value: &_storage._assetOptimized) }()
         default: break
         }
       }
@@ -4321,6 +4399,9 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       if !_storage._accountID.isEmpty {
         try visitor.visitSingularBytesField(value: _storage._accountID, fieldNumber: 23)
       }
+      if _storage._netWindowSize != 0 {
+        try visitor.visitSingularInt64Field(value: _storage._netWindowSize, fieldNumber: 24)
+      }
       try { if let v = _storage._accountResource {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 26)
       } }()
@@ -4335,6 +4416,18 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       } }()
       if !_storage._activePermission.isEmpty {
         try visitor.visitRepeatedMessageField(value: _storage._activePermission, fieldNumber: 33)
+      }
+      if !_storage._frozenV2.isEmpty {
+        try visitor.visitRepeatedMessageField(value: _storage._frozenV2, fieldNumber: 34)
+      }
+      if !_storage._unfrozenV2.isEmpty {
+        try visitor.visitRepeatedMessageField(value: _storage._unfrozenV2, fieldNumber: 35)
+      }
+      if _storage._delegatedFrozenV2BalanceForBandwidth != 0 {
+        try visitor.visitSingularInt64Field(value: _storage._delegatedFrozenV2BalanceForBandwidth, fieldNumber: 36)
+      }
+      if _storage._acquiredDelegatedFrozenV2BalanceForBandwidth != 0 {
+        try visitor.visitSingularInt64Field(value: _storage._acquiredDelegatedFrozenV2BalanceForBandwidth, fieldNumber: 37)
       }
       if _storage._acquiredDelegatedFrozenBalanceForBandwidth != 0 {
         try visitor.visitSingularInt64Field(value: _storage._acquiredDelegatedFrozenBalanceForBandwidth, fieldNumber: 41)
@@ -4360,6 +4453,9 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       if !_storage._freeAssetNetUsageV2.isEmpty {
         try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: _storage._freeAssetNetUsageV2, fieldNumber: 59)
       }
+      if _storage._assetOptimized != false {
+        try visitor.visitSingularBoolField(value: _storage._assetOptimized, fieldNumber: 60)
+      }
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -4382,6 +4478,7 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
         if _storage._delegatedFrozenBalanceForBandwidth != rhs_storage._delegatedFrozenBalanceForBandwidth {return false}
         if _storage._oldTronPower != rhs_storage._oldTronPower {return false}
         if _storage._tronPower != rhs_storage._tronPower {return false}
+        if _storage._assetOptimized != rhs_storage._assetOptimized {return false}
         if _storage._createTime != rhs_storage._createTime {return false}
         if _storage._latestOprationTime != rhs_storage._latestOprationTime {return false}
         if _storage._allowance != rhs_storage._allowance {return false}
@@ -4400,11 +4497,16 @@ extension Protocol_Account: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
         if _storage._latestConsumeTime != rhs_storage._latestConsumeTime {return false}
         if _storage._latestConsumeFreeTime != rhs_storage._latestConsumeFreeTime {return false}
         if _storage._accountID != rhs_storage._accountID {return false}
+        if _storage._netWindowSize != rhs_storage._netWindowSize {return false}
         if _storage._accountResource != rhs_storage._accountResource {return false}
         if _storage._codeHash != rhs_storage._codeHash {return false}
         if _storage._ownerPermission != rhs_storage._ownerPermission {return false}
         if _storage._witnessPermission != rhs_storage._witnessPermission {return false}
         if _storage._activePermission != rhs_storage._activePermission {return false}
+        if _storage._frozenV2 != rhs_storage._frozenV2 {return false}
+        if _storage._unfrozenV2 != rhs_storage._unfrozenV2 {return false}
+        if _storage._delegatedFrozenV2BalanceForBandwidth != rhs_storage._delegatedFrozenV2BalanceForBandwidth {return false}
+        if _storage._acquiredDelegatedFrozenV2BalanceForBandwidth != rhs_storage._acquiredDelegatedFrozenV2BalanceForBandwidth {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -4463,6 +4565,9 @@ extension Protocol_Account.AccountResource: SwiftProtobuf.Message, SwiftProtobuf
     6: .standard(proto: "storage_limit"),
     7: .standard(proto: "storage_usage"),
     8: .standard(proto: "latest_exchange_storage_time"),
+    9: .standard(proto: "energy_window_size"),
+    10: .standard(proto: "delegated_frozenV2_balance_for_energy"),
+    11: .standard(proto: "acquired_delegated_frozenV2_balance_for_energy"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -4479,6 +4584,9 @@ extension Protocol_Account.AccountResource: SwiftProtobuf.Message, SwiftProtobuf
       case 6: try { try decoder.decodeSingularInt64Field(value: &self.storageLimit) }()
       case 7: try { try decoder.decodeSingularInt64Field(value: &self.storageUsage) }()
       case 8: try { try decoder.decodeSingularInt64Field(value: &self.latestExchangeStorageTime) }()
+      case 9: try { try decoder.decodeSingularInt64Field(value: &self.energyWindowSize) }()
+      case 10: try { try decoder.decodeSingularInt64Field(value: &self.delegatedFrozenV2BalanceForEnergy) }()
+      case 11: try { try decoder.decodeSingularInt64Field(value: &self.acquiredDelegatedFrozenV2BalanceForEnergy) }()
       default: break
       }
     }
@@ -4513,6 +4621,15 @@ extension Protocol_Account.AccountResource: SwiftProtobuf.Message, SwiftProtobuf
     if self.latestExchangeStorageTime != 0 {
       try visitor.visitSingularInt64Field(value: self.latestExchangeStorageTime, fieldNumber: 8)
     }
+    if self.energyWindowSize != 0 {
+      try visitor.visitSingularInt64Field(value: self.energyWindowSize, fieldNumber: 9)
+    }
+    if self.delegatedFrozenV2BalanceForEnergy != 0 {
+      try visitor.visitSingularInt64Field(value: self.delegatedFrozenV2BalanceForEnergy, fieldNumber: 10)
+    }
+    if self.acquiredDelegatedFrozenV2BalanceForEnergy != 0 {
+      try visitor.visitSingularInt64Field(value: self.acquiredDelegatedFrozenV2BalanceForEnergy, fieldNumber: 11)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -4525,24 +4642,19 @@ extension Protocol_Account.AccountResource: SwiftProtobuf.Message, SwiftProtobuf
     if lhs.storageLimit != rhs.storageLimit {return false}
     if lhs.storageUsage != rhs.storageUsage {return false}
     if lhs.latestExchangeStorageTime != rhs.latestExchangeStorageTime {return false}
+    if lhs.energyWindowSize != rhs.energyWindowSize {return false}
+    if lhs.delegatedFrozenV2BalanceForEnergy != rhs.delegatedFrozenV2BalanceForEnergy {return false}
+    if lhs.acquiredDelegatedFrozenV2BalanceForEnergy != rhs.acquiredDelegatedFrozenV2BalanceForEnergy {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-extension Protocol_AccountAsset: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  public static let protoMessageName: String = _protobuf_package + ".AccountAsset"
+extension Protocol_Account.FreezeV2: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = Protocol_Account.protoMessageName + ".FreezeV2"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "address"),
-    2: .same(proto: "asset"),
-    3: .same(proto: "assetV2"),
-    4: .standard(proto: "asset_issued_name"),
-    5: .standard(proto: "asset_issued_ID"),
-    6: .standard(proto: "latest_asset_operation_time"),
-    7: .standard(proto: "latest_asset_operation_timeV2"),
-    8: .standard(proto: "free_asset_net_usage"),
-    9: .standard(proto: "free_asset_net_usageV2"),
-    10: .standard(proto: "frozen_supply"),
+    1: .same(proto: "type"),
+    2: .same(proto: "amount"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -4551,76 +4663,37 @@ extension Protocol_AccountAsset: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularBytesField(value: &self.address) }()
-      case 2: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: &self.asset) }()
-      case 3: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: &self.assetV2) }()
-      case 4: try { try decoder.decodeSingularBytesField(value: &self.assetIssuedName) }()
-      case 5: try { try decoder.decodeSingularBytesField(value: &self.assetIssuedID) }()
-      case 6: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: &self.latestAssetOperationTime) }()
-      case 7: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: &self.latestAssetOperationTimeV2) }()
-      case 8: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: &self.freeAssetNetUsage) }()
-      case 9: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: &self.freeAssetNetUsageV2) }()
-      case 10: try { try decoder.decodeRepeatedMessageField(value: &self.frozenSupply) }()
+      case 1: try { try decoder.decodeSingularEnumField(value: &self.type) }()
+      case 2: try { try decoder.decodeSingularInt64Field(value: &self.amount) }()
       default: break
       }
     }
   }
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.address.isEmpty {
-      try visitor.visitSingularBytesField(value: self.address, fieldNumber: 1)
+    if self.type != .bandwidth {
+      try visitor.visitSingularEnumField(value: self.type, fieldNumber: 1)
     }
-    if !self.asset.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: self.asset, fieldNumber: 2)
-    }
-    if !self.assetV2.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: self.assetV2, fieldNumber: 3)
-    }
-    if !self.assetIssuedName.isEmpty {
-      try visitor.visitSingularBytesField(value: self.assetIssuedName, fieldNumber: 4)
-    }
-    if !self.assetIssuedID.isEmpty {
-      try visitor.visitSingularBytesField(value: self.assetIssuedID, fieldNumber: 5)
-    }
-    if !self.latestAssetOperationTime.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: self.latestAssetOperationTime, fieldNumber: 6)
-    }
-    if !self.latestAssetOperationTimeV2.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: self.latestAssetOperationTimeV2, fieldNumber: 7)
-    }
-    if !self.freeAssetNetUsage.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: self.freeAssetNetUsage, fieldNumber: 8)
-    }
-    if !self.freeAssetNetUsageV2.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufInt64>.self, value: self.freeAssetNetUsageV2, fieldNumber: 9)
-    }
-    if !self.frozenSupply.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.frozenSupply, fieldNumber: 10)
+    if self.amount != 0 {
+      try visitor.visitSingularInt64Field(value: self.amount, fieldNumber: 2)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public static func ==(lhs: Protocol_AccountAsset, rhs: Protocol_AccountAsset) -> Bool {
-    if lhs.address != rhs.address {return false}
-    if lhs.asset != rhs.asset {return false}
-    if lhs.assetV2 != rhs.assetV2 {return false}
-    if lhs.assetIssuedName != rhs.assetIssuedName {return false}
-    if lhs.assetIssuedID != rhs.assetIssuedID {return false}
-    if lhs.latestAssetOperationTime != rhs.latestAssetOperationTime {return false}
-    if lhs.latestAssetOperationTimeV2 != rhs.latestAssetOperationTimeV2 {return false}
-    if lhs.freeAssetNetUsage != rhs.freeAssetNetUsage {return false}
-    if lhs.freeAssetNetUsageV2 != rhs.freeAssetNetUsageV2 {return false}
-    if lhs.frozenSupply != rhs.frozenSupply {return false}
+  public static func ==(lhs: Protocol_Account.FreezeV2, rhs: Protocol_Account.FreezeV2) -> Bool {
+    if lhs.type != rhs.type {return false}
+    if lhs.amount != rhs.amount {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-extension Protocol_AccountAsset.Frozen: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  public static let protoMessageName: String = Protocol_AccountAsset.protoMessageName + ".Frozen"
+extension Protocol_Account.UnFreezeV2: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = Protocol_Account.protoMessageName + ".UnFreezeV2"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "frozen_balance"),
-    2: .standard(proto: "expire_time"),
+    1: .same(proto: "type"),
+    3: .standard(proto: "unfreeze_amount"),
+    4: .standard(proto: "unfreeze_expire_time"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -4629,26 +4702,31 @@ extension Protocol_AccountAsset.Frozen: SwiftProtobuf.Message, SwiftProtobuf._Me
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularInt64Field(value: &self.frozenBalance) }()
-      case 2: try { try decoder.decodeSingularInt64Field(value: &self.expireTime) }()
+      case 1: try { try decoder.decodeSingularEnumField(value: &self.type) }()
+      case 3: try { try decoder.decodeSingularInt64Field(value: &self.unfreezeAmount) }()
+      case 4: try { try decoder.decodeSingularInt64Field(value: &self.unfreezeExpireTime) }()
       default: break
       }
     }
   }
 
   public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.frozenBalance != 0 {
-      try visitor.visitSingularInt64Field(value: self.frozenBalance, fieldNumber: 1)
+    if self.type != .bandwidth {
+      try visitor.visitSingularEnumField(value: self.type, fieldNumber: 1)
     }
-    if self.expireTime != 0 {
-      try visitor.visitSingularInt64Field(value: self.expireTime, fieldNumber: 2)
+    if self.unfreezeAmount != 0 {
+      try visitor.visitSingularInt64Field(value: self.unfreezeAmount, fieldNumber: 3)
+    }
+    if self.unfreezeExpireTime != 0 {
+      try visitor.visitSingularInt64Field(value: self.unfreezeExpireTime, fieldNumber: 4)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public static func ==(lhs: Protocol_AccountAsset.Frozen, rhs: Protocol_AccountAsset.Frozen) -> Bool {
-    if lhs.frozenBalance != rhs.frozenBalance {return false}
-    if lhs.expireTime != rhs.expireTime {return false}
+  public static func ==(lhs: Protocol_Account.UnFreezeV2, rhs: Protocol_Account.UnFreezeV2) -> Bool {
+    if lhs.type != rhs.type {return false}
+    if lhs.unfreezeAmount != rhs.unfreezeAmount {return false}
+    if lhs.unfreezeExpireTime != rhs.unfreezeExpireTime {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -5162,6 +5240,7 @@ extension Protocol_ResourceReceipt: SwiftProtobuf.Message, SwiftProtobuf._Messag
     5: .standard(proto: "net_usage"),
     6: .standard(proto: "net_fee"),
     7: .same(proto: "result"),
+    8: .standard(proto: "energy_penalty_total"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -5177,6 +5256,7 @@ extension Protocol_ResourceReceipt: SwiftProtobuf.Message, SwiftProtobuf._Messag
       case 5: try { try decoder.decodeSingularInt64Field(value: &self.netUsage) }()
       case 6: try { try decoder.decodeSingularInt64Field(value: &self.netFee) }()
       case 7: try { try decoder.decodeSingularEnumField(value: &self.result) }()
+      case 8: try { try decoder.decodeSingularInt64Field(value: &self.energyPenaltyTotal) }()
       default: break
       }
     }
@@ -5204,6 +5284,9 @@ extension Protocol_ResourceReceipt: SwiftProtobuf.Message, SwiftProtobuf._Messag
     if self.result != .default {
       try visitor.visitSingularEnumField(value: self.result, fieldNumber: 7)
     }
+    if self.energyPenaltyTotal != 0 {
+      try visitor.visitSingularInt64Field(value: self.energyPenaltyTotal, fieldNumber: 8)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -5215,6 +5298,7 @@ extension Protocol_ResourceReceipt: SwiftProtobuf.Message, SwiftProtobuf._Messag
     if lhs.netUsage != rhs.netUsage {return false}
     if lhs.netFee != rhs.netFee {return false}
     if lhs.result != rhs.result {return false}
+    if lhs.energyPenaltyTotal != rhs.energyPenaltyTotal {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -5415,6 +5499,11 @@ extension Protocol_Transaction.Contract.ContractType: SwiftProtobuf._ProtoNamePr
     51: .same(proto: "ShieldedTransferContract"),
     52: .same(proto: "MarketSellAssetContract"),
     53: .same(proto: "MarketCancelOrderContract"),
+    54: .same(proto: "FreezeBalanceV2Contract"),
+    55: .same(proto: "UnfreezeBalanceV2Contract"),
+    56: .same(proto: "WithdrawExpireUnfreezeContract"),
+    57: .same(proto: "DelegateResourceContract"),
+    58: .same(proto: "UnDelegateResourceContract"),
   ]
 }
 
@@ -5434,6 +5523,7 @@ extension Protocol_Transaction.Result: SwiftProtobuf.Message, SwiftProtobuf._Mes
     22: .standard(proto: "shielded_transaction_fee"),
     25: .same(proto: "orderId"),
     26: .same(proto: "orderDetails"),
+    27: .standard(proto: "withdraw_expire_amount"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -5455,6 +5545,7 @@ extension Protocol_Transaction.Result: SwiftProtobuf.Message, SwiftProtobuf._Mes
       case 22: try { try decoder.decodeSingularInt64Field(value: &self.shieldedTransactionFee) }()
       case 25: try { try decoder.decodeSingularBytesField(value: &self.orderID) }()
       case 26: try { try decoder.decodeRepeatedMessageField(value: &self.orderDetails) }()
+      case 27: try { try decoder.decodeSingularInt64Field(value: &self.withdrawExpireAmount) }()
       default: break
       }
     }
@@ -5500,6 +5591,9 @@ extension Protocol_Transaction.Result: SwiftProtobuf.Message, SwiftProtobuf._Mes
     if !self.orderDetails.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.orderDetails, fieldNumber: 26)
     }
+    if self.withdrawExpireAmount != 0 {
+      try visitor.visitSingularInt64Field(value: self.withdrawExpireAmount, fieldNumber: 27)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -5517,6 +5611,7 @@ extension Protocol_Transaction.Result: SwiftProtobuf.Message, SwiftProtobuf._Mes
     if lhs.shieldedTransactionFee != rhs.shieldedTransactionFee {return false}
     if lhs.orderID != rhs.orderID {return false}
     if lhs.orderDetails != rhs.orderDetails {return false}
+    if lhs.withdrawExpireAmount != rhs.withdrawExpireAmount {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -5661,6 +5756,7 @@ extension Protocol_TransactionInfo: SwiftProtobuf.Message, SwiftProtobuf._Messag
     25: .same(proto: "orderId"),
     26: .same(proto: "orderDetails"),
     27: .same(proto: "packingFee"),
+    28: .standard(proto: "withdraw_expire_amount"),
   ]
 
   fileprivate class _StorageClass {
@@ -5686,6 +5782,7 @@ extension Protocol_TransactionInfo: SwiftProtobuf.Message, SwiftProtobuf._Messag
     var _orderID: Data = Data()
     var _orderDetails: [Protocol_MarketOrderDetail] = []
     var _packingFee: Int64 = 0
+    var _withdrawExpireAmount: Int64 = 0
 
     static let defaultInstance = _StorageClass()
 
@@ -5714,6 +5811,7 @@ extension Protocol_TransactionInfo: SwiftProtobuf.Message, SwiftProtobuf._Messag
       _orderID = source._orderID
       _orderDetails = source._orderDetails
       _packingFee = source._packingFee
+      _withdrawExpireAmount = source._withdrawExpireAmount
     }
   }
 
@@ -5754,6 +5852,7 @@ extension Protocol_TransactionInfo: SwiftProtobuf.Message, SwiftProtobuf._Messag
         case 25: try { try decoder.decodeSingularBytesField(value: &_storage._orderID) }()
         case 26: try { try decoder.decodeRepeatedMessageField(value: &_storage._orderDetails) }()
         case 27: try { try decoder.decodeSingularInt64Field(value: &_storage._packingFee) }()
+        case 28: try { try decoder.decodeSingularInt64Field(value: &_storage._withdrawExpireAmount) }()
         default: break
         }
       }
@@ -5832,6 +5931,9 @@ extension Protocol_TransactionInfo: SwiftProtobuf.Message, SwiftProtobuf._Messag
       if _storage._packingFee != 0 {
         try visitor.visitSingularInt64Field(value: _storage._packingFee, fieldNumber: 27)
       }
+      if _storage._withdrawExpireAmount != 0 {
+        try visitor.visitSingularInt64Field(value: _storage._withdrawExpireAmount, fieldNumber: 28)
+      }
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -5863,6 +5965,7 @@ extension Protocol_TransactionInfo: SwiftProtobuf.Message, SwiftProtobuf._Messag
         if _storage._orderID != rhs_storage._orderID {return false}
         if _storage._orderDetails != rhs_storage._orderDetails {return false}
         if _storage._packingFee != rhs_storage._packingFee {return false}
+        if _storage._withdrawExpireAmount != rhs_storage._withdrawExpireAmount {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -6538,6 +6641,8 @@ extension Protocol_HelloMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
     6: .same(proto: "headBlockId"),
     7: .same(proto: "address"),
     8: .same(proto: "signature"),
+    9: .same(proto: "nodeType"),
+    10: .same(proto: "lowestBlockNum"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -6554,6 +6659,8 @@ extension Protocol_HelloMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
       case 6: try { try decoder.decodeSingularMessageField(value: &self._headBlockID) }()
       case 7: try { try decoder.decodeSingularBytesField(value: &self.address) }()
       case 8: try { try decoder.decodeSingularBytesField(value: &self.signature) }()
+      case 9: try { try decoder.decodeSingularInt32Field(value: &self.nodeType) }()
+      case 10: try { try decoder.decodeSingularInt64Field(value: &self.lowestBlockNum) }()
       default: break
       }
     }
@@ -6588,6 +6695,12 @@ extension Protocol_HelloMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
     if !self.signature.isEmpty {
       try visitor.visitSingularBytesField(value: self.signature, fieldNumber: 8)
     }
+    if self.nodeType != 0 {
+      try visitor.visitSingularInt32Field(value: self.nodeType, fieldNumber: 9)
+    }
+    if self.lowestBlockNum != 0 {
+      try visitor.visitSingularInt64Field(value: self.lowestBlockNum, fieldNumber: 10)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -6600,6 +6713,8 @@ extension Protocol_HelloMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
     if lhs._headBlockID != rhs._headBlockID {return false}
     if lhs.address != rhs.address {return false}
     if lhs.signature != rhs.signature {return false}
+    if lhs.nodeType != rhs.nodeType {return false}
+    if lhs.lowestBlockNum != rhs.lowestBlockNum {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -6755,6 +6870,7 @@ extension Protocol_DelegatedResourceAccountIndex: SwiftProtobuf.Message, SwiftPr
     1: .same(proto: "account"),
     2: .same(proto: "fromAccounts"),
     3: .same(proto: "toAccounts"),
+    4: .same(proto: "timestamp"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -6766,6 +6882,7 @@ extension Protocol_DelegatedResourceAccountIndex: SwiftProtobuf.Message, SwiftPr
       case 1: try { try decoder.decodeSingularBytesField(value: &self.account) }()
       case 2: try { try decoder.decodeRepeatedBytesField(value: &self.fromAccounts) }()
       case 3: try { try decoder.decodeRepeatedBytesField(value: &self.toAccounts) }()
+      case 4: try { try decoder.decodeSingularInt64Field(value: &self.timestamp) }()
       default: break
       }
     }
@@ -6781,6 +6898,9 @@ extension Protocol_DelegatedResourceAccountIndex: SwiftProtobuf.Message, SwiftPr
     if !self.toAccounts.isEmpty {
       try visitor.visitRepeatedBytesField(value: self.toAccounts, fieldNumber: 3)
     }
+    if self.timestamp != 0 {
+      try visitor.visitSingularInt64Field(value: self.timestamp, fieldNumber: 4)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -6788,6 +6908,7 @@ extension Protocol_DelegatedResourceAccountIndex: SwiftProtobuf.Message, SwiftPr
     if lhs.account != rhs.account {return false}
     if lhs.fromAccounts != rhs.fromAccounts {return false}
     if lhs.toAccounts != rhs.toAccounts {return false}
+    if lhs.timestamp != rhs.timestamp {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

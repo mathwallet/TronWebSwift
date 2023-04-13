@@ -246,6 +246,82 @@ public struct Protocol_DelegatedResourceList {
   public init() {}
 }
 
+public struct Protocol_GetAvailableUnfreezeCountRequestMessage {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var ownerAddress: Data = Data()
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Protocol_GetAvailableUnfreezeCountResponseMessage {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var count: Int64 = 0
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Protocol_CanDelegatedMaxSizeRequestMessage {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var type: Int32 = 0
+
+  public var ownerAddress: Data = Data()
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Protocol_CanDelegatedMaxSizeResponseMessage {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var maxSize: Int64 = 0
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Protocol_CanWithdrawUnfreezeAmountRequestMessage {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var ownerAddress: Data = Data()
+
+  public var timestamp: Int64 = 0
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Protocol_CanWithdrawUnfreezeAmountResponseMessage {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var amount: Int64 = 0
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
 /// Gossip node list
 public struct Protocol_NodeList {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
@@ -338,6 +414,20 @@ public struct Protocol_TimeMessage {
   public var beginInMilliseconds: Int64 = 0
 
   public var endInMilliseconds: Int64 = 0
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+}
+
+public struct Protocol_BlockReq {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var idOrNum: String = String()
+
+  public var detail: Bool = false
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -725,11 +815,39 @@ public struct Protocol_TransactionExtention {
     set {_uniqueStorage()._internalTransactions = newValue}
   }
 
+  public var energyPenalty: Int64 {
+    get {return _storage._energyPenalty}
+    set {_uniqueStorage()._energyPenalty = newValue}
+  }
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
 
   fileprivate var _storage = _StorageClass.defaultInstance
+}
+
+public struct Protocol_EstimateEnergyMessage {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  public var result: Protocol_Return {
+    get {return _result ?? Protocol_Return()}
+    set {_result = newValue}
+  }
+  /// Returns true if `result` has been explicitly set.
+  public var hasResult: Bool {return self._result != nil}
+  /// Clears the value of `result`. Subsequent reads from it will return its default value.
+  public mutating func clearResult() {self._result = nil}
+
+  public var energyRequired: Int64 = 0
+
+  public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  public init() {}
+
+  fileprivate var _result: Protocol_Return? = nil
 }
 
 public struct Protocol_BlockExtention {
@@ -1823,6 +1941,12 @@ extension Protocol_TransactionList: @unchecked Sendable {}
 extension Protocol_TransactionIdList: @unchecked Sendable {}
 extension Protocol_DelegatedResourceMessage: @unchecked Sendable {}
 extension Protocol_DelegatedResourceList: @unchecked Sendable {}
+extension Protocol_GetAvailableUnfreezeCountRequestMessage: @unchecked Sendable {}
+extension Protocol_GetAvailableUnfreezeCountResponseMessage: @unchecked Sendable {}
+extension Protocol_CanDelegatedMaxSizeRequestMessage: @unchecked Sendable {}
+extension Protocol_CanDelegatedMaxSizeResponseMessage: @unchecked Sendable {}
+extension Protocol_CanWithdrawUnfreezeAmountRequestMessage: @unchecked Sendable {}
+extension Protocol_CanWithdrawUnfreezeAmountResponseMessage: @unchecked Sendable {}
 extension Protocol_NodeList: @unchecked Sendable {}
 extension Protocol_Node: @unchecked Sendable {}
 extension Protocol_Address: @unchecked Sendable {}
@@ -1830,6 +1954,7 @@ extension Protocol_EmptyMessage: @unchecked Sendable {}
 extension Protocol_NumberMessage: @unchecked Sendable {}
 extension Protocol_BytesMessage: @unchecked Sendable {}
 extension Protocol_TimeMessage: @unchecked Sendable {}
+extension Protocol_BlockReq: @unchecked Sendable {}
 extension Protocol_BlockLimit: @unchecked Sendable {}
 extension Protocol_TransactionLimit: @unchecked Sendable {}
 extension Protocol_AccountPaginated: @unchecked Sendable {}
@@ -1844,6 +1969,7 @@ extension Protocol_EasyTransferAssetByPrivateMessage: @unchecked Sendable {}
 extension Protocol_EasyTransferResponse: @unchecked Sendable {}
 extension Protocol_AddressPrKeyPairMessage: @unchecked Sendable {}
 extension Protocol_TransactionExtention: @unchecked Sendable {}
+extension Protocol_EstimateEnergyMessage: @unchecked Sendable {}
 extension Protocol_BlockExtention: @unchecked Sendable {}
 extension Protocol_BlockListExtention: @unchecked Sendable {}
 extension Protocol_TransactionListExtention: @unchecked Sendable {}
@@ -2289,6 +2415,210 @@ extension Protocol_DelegatedResourceList: SwiftProtobuf.Message, SwiftProtobuf._
   }
 }
 
+extension Protocol_GetAvailableUnfreezeCountRequestMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".GetAvailableUnfreezeCountRequestMessage"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "owner_address"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularBytesField(value: &self.ownerAddress) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.ownerAddress.isEmpty {
+      try visitor.visitSingularBytesField(value: self.ownerAddress, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Protocol_GetAvailableUnfreezeCountRequestMessage, rhs: Protocol_GetAvailableUnfreezeCountRequestMessage) -> Bool {
+    if lhs.ownerAddress != rhs.ownerAddress {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Protocol_GetAvailableUnfreezeCountResponseMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".GetAvailableUnfreezeCountResponseMessage"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "count"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt64Field(value: &self.count) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.count != 0 {
+      try visitor.visitSingularInt64Field(value: self.count, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Protocol_GetAvailableUnfreezeCountResponseMessage, rhs: Protocol_GetAvailableUnfreezeCountResponseMessage) -> Bool {
+    if lhs.count != rhs.count {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Protocol_CanDelegatedMaxSizeRequestMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".CanDelegatedMaxSizeRequestMessage"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "type"),
+    2: .standard(proto: "owner_address"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt32Field(value: &self.type) }()
+      case 2: try { try decoder.decodeSingularBytesField(value: &self.ownerAddress) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.type != 0 {
+      try visitor.visitSingularInt32Field(value: self.type, fieldNumber: 1)
+    }
+    if !self.ownerAddress.isEmpty {
+      try visitor.visitSingularBytesField(value: self.ownerAddress, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Protocol_CanDelegatedMaxSizeRequestMessage, rhs: Protocol_CanDelegatedMaxSizeRequestMessage) -> Bool {
+    if lhs.type != rhs.type {return false}
+    if lhs.ownerAddress != rhs.ownerAddress {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Protocol_CanDelegatedMaxSizeResponseMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".CanDelegatedMaxSizeResponseMessage"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "max_size"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt64Field(value: &self.maxSize) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.maxSize != 0 {
+      try visitor.visitSingularInt64Field(value: self.maxSize, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Protocol_CanDelegatedMaxSizeResponseMessage, rhs: Protocol_CanDelegatedMaxSizeResponseMessage) -> Bool {
+    if lhs.maxSize != rhs.maxSize {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Protocol_CanWithdrawUnfreezeAmountRequestMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".CanWithdrawUnfreezeAmountRequestMessage"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "owner_address"),
+    2: .same(proto: "timestamp"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularBytesField(value: &self.ownerAddress) }()
+      case 2: try { try decoder.decodeSingularInt64Field(value: &self.timestamp) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.ownerAddress.isEmpty {
+      try visitor.visitSingularBytesField(value: self.ownerAddress, fieldNumber: 1)
+    }
+    if self.timestamp != 0 {
+      try visitor.visitSingularInt64Field(value: self.timestamp, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Protocol_CanWithdrawUnfreezeAmountRequestMessage, rhs: Protocol_CanWithdrawUnfreezeAmountRequestMessage) -> Bool {
+    if lhs.ownerAddress != rhs.ownerAddress {return false}
+    if lhs.timestamp != rhs.timestamp {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Protocol_CanWithdrawUnfreezeAmountResponseMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".CanWithdrawUnfreezeAmountResponseMessage"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "amount"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt64Field(value: &self.amount) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.amount != 0 {
+      try visitor.visitSingularInt64Field(value: self.amount, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Protocol_CanWithdrawUnfreezeAmountResponseMessage, rhs: Protocol_CanWithdrawUnfreezeAmountResponseMessage) -> Bool {
+    if lhs.amount != rhs.amount {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
 extension Protocol_NodeList: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".NodeList"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -2511,6 +2841,44 @@ extension Protocol_TimeMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
   public static func ==(lhs: Protocol_TimeMessage, rhs: Protocol_TimeMessage) -> Bool {
     if lhs.beginInMilliseconds != rhs.beginInMilliseconds {return false}
     if lhs.endInMilliseconds != rhs.endInMilliseconds {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Protocol_BlockReq: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".BlockReq"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .standard(proto: "id_or_num"),
+    2: .same(proto: "detail"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.idOrNum) }()
+      case 2: try { try decoder.decodeSingularBoolField(value: &self.detail) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.idOrNum.isEmpty {
+      try visitor.visitSingularStringField(value: self.idOrNum, fieldNumber: 1)
+    }
+    if self.detail != false {
+      try visitor.visitSingularBoolField(value: self.detail, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Protocol_BlockReq, rhs: Protocol_BlockReq) -> Bool {
+    if lhs.idOrNum != rhs.idOrNum {return false}
+    if lhs.detail != rhs.detail {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
@@ -3276,6 +3644,7 @@ extension Protocol_TransactionExtention: SwiftProtobuf.Message, SwiftProtobuf._M
     5: .standard(proto: "energy_used"),
     6: .same(proto: "logs"),
     7: .standard(proto: "internal_transactions"),
+    8: .standard(proto: "energy_penalty"),
   ]
 
   fileprivate class _StorageClass {
@@ -3286,6 +3655,7 @@ extension Protocol_TransactionExtention: SwiftProtobuf.Message, SwiftProtobuf._M
     var _energyUsed: Int64 = 0
     var _logs: [Protocol_TransactionInfo.Log] = []
     var _internalTransactions: [Protocol_InternalTransaction] = []
+    var _energyPenalty: Int64 = 0
 
     static let defaultInstance = _StorageClass()
 
@@ -3299,6 +3669,7 @@ extension Protocol_TransactionExtention: SwiftProtobuf.Message, SwiftProtobuf._M
       _energyUsed = source._energyUsed
       _logs = source._logs
       _internalTransactions = source._internalTransactions
+      _energyPenalty = source._energyPenalty
     }
   }
 
@@ -3324,6 +3695,7 @@ extension Protocol_TransactionExtention: SwiftProtobuf.Message, SwiftProtobuf._M
         case 5: try { try decoder.decodeSingularInt64Field(value: &_storage._energyUsed) }()
         case 6: try { try decoder.decodeRepeatedMessageField(value: &_storage._logs) }()
         case 7: try { try decoder.decodeRepeatedMessageField(value: &_storage._internalTransactions) }()
+        case 8: try { try decoder.decodeSingularInt64Field(value: &_storage._energyPenalty) }()
         default: break
         }
       }
@@ -3357,6 +3729,9 @@ extension Protocol_TransactionExtention: SwiftProtobuf.Message, SwiftProtobuf._M
       if !_storage._internalTransactions.isEmpty {
         try visitor.visitRepeatedMessageField(value: _storage._internalTransactions, fieldNumber: 7)
       }
+      if _storage._energyPenalty != 0 {
+        try visitor.visitSingularInt64Field(value: _storage._energyPenalty, fieldNumber: 8)
+      }
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -3373,10 +3748,53 @@ extension Protocol_TransactionExtention: SwiftProtobuf.Message, SwiftProtobuf._M
         if _storage._energyUsed != rhs_storage._energyUsed {return false}
         if _storage._logs != rhs_storage._logs {return false}
         if _storage._internalTransactions != rhs_storage._internalTransactions {return false}
+        if _storage._energyPenalty != rhs_storage._energyPenalty {return false}
         return true
       }
       if !storagesAreEqual {return false}
     }
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Protocol_EstimateEnergyMessage: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  public static let protoMessageName: String = _protobuf_package + ".EstimateEnergyMessage"
+  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    1: .same(proto: "result"),
+    2: .standard(proto: "energy_required"),
+  ]
+
+  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._result) }()
+      case 2: try { try decoder.decodeSingularInt64Field(value: &self.energyRequired) }()
+      default: break
+      }
+    }
+  }
+
+  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._result {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    if self.energyRequired != 0 {
+      try visitor.visitSingularInt64Field(value: self.energyRequired, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  public static func ==(lhs: Protocol_EstimateEnergyMessage, rhs: Protocol_EstimateEnergyMessage) -> Bool {
+    if lhs._result != rhs._result {return false}
+    if lhs.energyRequired != rhs.energyRequired {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
