@@ -16,10 +16,10 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.18.0"),
+         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.26.0"),
          .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.4.2"),
          .package(url: "https://github.com/mathwallet/Secp256k1Swift.git", from: "1.3.1"),
-         .package(url: "https://github.com/mxcl/PromiseKit.git", from: "6.16.2")
+         .package(url: "https://github.com/mxcl/PromiseKit.git", from: "8.1.1")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
