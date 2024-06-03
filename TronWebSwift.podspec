@@ -11,7 +11,7 @@ Pod::Spec.new do |spec|
 
   spec.requires_arc = true
   spec.source = { git: 'https://github.com/Whitehare2023/TronWebSwift.git', branch: 'add-podspec' }
-  spec.source_files = 'TronWebSwift/**/*.{h,m,swift}'
+  spec.source_files = 'Sources/TronWebSwift/**/*.{h,m,swift}'
   spec.exclude_files = 'Sources/**/LinuxSupport.swift'
   spec.ios.deployment_target = '13.0'
   spec.swift_version = '5.0'
