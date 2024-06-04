@@ -21,5 +21,5 @@ Pod::Spec.new do |spec|
   spec.dependency 'BigInt'
   spec.dependency 'PromiseKit'
   spec.dependency 'CryptoSwift'
-  
+  spec.dependency 'BIP32Swift'
 end
