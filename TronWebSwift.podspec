@@ -17,4 +17,5 @@ Pod::Spec.new do |spec|
   spec.swift_version = '5.0'
 
   spec.dependency 'Alamofire', '~> 5.4'
+  spec.dependency 'SwiftProtobuf'
 end
