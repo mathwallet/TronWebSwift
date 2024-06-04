@@ -20,4 +20,6 @@ Pod::Spec.new do |spec|
   spec.dependency 'SwiftProtobuf'
   spec.dependency 'BigInt'
   spec.dependency 'PromiseKit'
+  spec.dependency 'CryptoSwift'
+  
 end
