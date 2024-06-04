@@ -19,4 +19,5 @@ Pod::Spec.new do |spec|
   spec.dependency 'Alamofire', '~> 5.4'
   spec.dependency 'SwiftProtobuf'
   spec.dependency 'BigInt'
+  spec.dependency 'PromiseKit'
 end
