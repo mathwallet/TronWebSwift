@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
         "state": {
           "branch": null,
-          "revision": "4b0565384d3c4c588af09e660535b2c7c9bf5b39",
-          "version": "1.4.2"
+          "revision": "e45a26384239e028ec87fbcc788f513b67e10d8f",
+          "version": "1.9.0"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/mathwallet/Secp256k1Swift.git",
         "state": {
           "branch": null,
-          "revision": "3eac0ee49d57eaf0d91d54df876194cdd0c971fe",
-          "version": "2.0.0"
+          "revision": "c958eaf1e485c00344031717384ef3d0504d67ba",
+          "version": "2.0.1"
         }
       },
       {

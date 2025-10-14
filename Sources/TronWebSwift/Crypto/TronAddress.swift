@@ -22,7 +22,7 @@ public struct TronAddress: CustomStringConvertible {
         guard TronAddress.isValid(data: data) else { return nil }
         
         self.data = data
-        self.address = data.bytes.base58CheckEncodedString
+        self.address = data.byteArray.base58CheckEncodedString
     }
     
     public init?(_ string: String) {
@@ -44,7 +44,7 @@ public struct TronAddress: CustomStringConvertible {
     
     public static func isValid(data: Data) -> Bool {
         guard data.count == 1 + TronAddress.size else { return false }
-        return data.bytes[0] == TronAddress.addressPrefix
+        return data.byteArray[0] == TronAddress.addressPrefix
     }
     
     public var description: String {
