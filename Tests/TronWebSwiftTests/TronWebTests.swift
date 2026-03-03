@@ -24,7 +24,9 @@ class TronWebTests: XCTestCase {
         DispatchQueue.global().async {
             do {
                 let resp = try self.provider.getChainParameters().wait()
-                debugPrint(resp)
+                resp.chainParameter.forEach { cp in
+                    debugPrint("\(cp.key): \(cp.value)")
+                }
                 reqeustExpectation.fulfill()
             } catch _ {
                 reqeustExpectation.fulfill()
@@ -38,11 +40,12 @@ class TronWebTests: XCTestCase {
         
         DispatchQueue.global().async {
             do {
-                let ownerAddress = TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!
+                let ownerAddress = TronAddress("TRgioeTKEW31c1D35EHqBe9hnR5Fzwkbks")!
                 let resp = try self.provider.getAccount(ownerAddress).wait()
                 debugPrint(resp)
                 reqeustExpectation.fulfill()
-            } catch _ {
+            } catch let error {
+                debugPrint(error)
                 reqeustExpectation.fulfill()
             }
         }
@@ -54,11 +57,12 @@ class TronWebTests: XCTestCase {
         
         DispatchQueue.global().async {
             do {
-                let ownerAddress = TronAddress("TWXNtL6rHGyk2xeVR3QqEN9QGKfgyRTeU2")!
+                let ownerAddress = TronAddress("TRgioeTKEW31c1D35EHqBe9hnR5Fzwkbks")!
                 let resp = try self.provider.getAccountResource(ownerAddress).wait()
                 debugPrint(resp)
                 reqeustExpectation.fulfill()
-            } catch _ {
+            } catch let error {
+                debugPrint(error)
                 reqeustExpectation.fulfill()
             }
         }

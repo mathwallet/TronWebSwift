@@ -72,6 +72,8 @@ public struct TronWebResponse {
             case error = "Error"
         }
     }
+    
+    public struct Empty: Decodable {}
 }
 
 // MARK: Addition

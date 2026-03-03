@@ -58,6 +58,11 @@ extension TronWebHttpProvider {
                 if let resp = try? JSONDecoder().decode(K.self, from: data) {
                     return resp
                 }
+                
+                if let _ = try? JSONDecoder().decode(TronWebResponse.Empty.self, from: data) {
+                    throw TronWebError.emptyObject
+                }
+                
                 throw TronWebError.nodeError(desc: "Received an error message from node")
             }
     }
@@ -105,6 +110,11 @@ extension TronWebHttpProvider {
                 if let resp = try? JSONDecoder().decode(K.self, from: data) {
                     return resp
                 }
+                
+                if let _ = try? JSONDecoder().decode(TronWebResponse.Empty.self, from: data) {
+                    throw TronWebError.emptyObject
+                }
+                
                 throw TronWebError.nodeError(desc: "Received an error message from node")
             }
     }
