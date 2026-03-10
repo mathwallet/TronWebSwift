@@ -123,7 +123,7 @@ fileprivate func parseEvent(abiRecord: TronABI.Record) throws -> TronABI.Element
 
 extension TronABI.Input {
     func parse() throws -> TronABI.Element.InOut {
-        let name = self.name != nil ? self.name! : ""
+        let name = self.name ?? ""
         let parameterType = try TronABITypeParser.parseTypeString(self.type)
         if case .tuple(types: _) = parameterType {
             let components = try self.components?.compactMap({ (inp: TronABI.Input) throws -> TronABI.Element.ParameterType in
@@ -133,10 +133,38 @@ extension TronABI.Input {
             let type = TronABI.Element.ParameterType.tuple(types: components!)
             let nativeInput = TronABI.Element.InOut(name: name, type: type)
             return nativeInput
-        }
-        else {
+        } else if case .array(type: _, length: _) = parameterType {
+            // 递归处理 tuple[], tuple[][] 任意嵌套
+            let resolvedType = try resolveArrayType(parameterType, components: self.components)
+            let nativeInput = TronABI.Element.InOut(name: name, type: resolvedType)
+            return nativeInput
+        } else {
             let nativeInput = TronABI.Element.InOut(name: name, type: parameterType)
             return nativeInput
+        }
+    }
+    
+    private func resolveArrayType(_ type: TronABI.Element.ParameterType, components: [TronABI.Input]?) throws -> TronABI.Element.ParameterType {
+        switch type {
+        case .array(type: let subType, length: let length):
+            switch subType {
+            case .tuple(types: _):
+                // 最内层是 tuple，填入 components
+                let resolvedComponents = try components?.compactMap({ (inp: TronABI.Input) throws -> TronABI.Element.ParameterType in
+                    let input = try inp.parse()
+                    return input.type
+                })
+                let tupleType = TronABI.Element.ParameterType.tuple(types: resolvedComponents ?? [])
+                return TronABI.Element.ParameterType.array(type: tupleType, length: length)
+            case .array(type: _, length: _):
+                // 还有外层 array，继续递归
+                let resolvedSubType = try resolveArrayType(subType, components: components)
+                return TronABI.Element.ParameterType.array(type: resolvedSubType, length: length)
+            default:
+                return type
+            }
+        default:
+            return type
         }
     }
     
