@@ -185,6 +185,12 @@ extension TronABIDecoder {
                     consumed = consumed + consumedUnwrapped
                 }
             }
+            //            print("Tuple element is: \n" + String(describing: toReturn))
+            if type.isStatic {
+                return (toReturn as AnyObject, consumed)
+            } else {
+                return (toReturn as AnyObject, nextElementPointer)
+            }
         case .function:
             //            print("Function element itself: \n" + elementItself.toHexString())
             guard elementItself.count >= 32 else {break}
@@ -207,7 +213,7 @@ extension TronABIDecoder {
             return (Data(elementItself), nextElement)
         } else {
             guard data.count >= pointer + type.memoryUsage else {return (nil, nil)}
-            let dataSlice = data[pointer ..< pointer + type.memoryUsage]
+            let dataSlice = data[data.startIndex + Int(pointer) ..< data.startIndex + Int(pointer + type.memoryUsage)]
             let bn = BigUInt(dataSlice)
             if bn > UINT64_MAX || bn >= data.count {
                 // there are ERC20 contracts that use bytes32 intead of string. Let's be optimistic and return some data
@@ -223,10 +229,9 @@ extension TronABIDecoder {
                 return (nil, nil)
             }
             let elementPointer = UInt64(bn)
-            let elementItself = data[elementPointer ..< UInt64(data.count)]
+            let startIndex = UInt64(data.startIndex)
+            let elementItself = data[startIndex + elementPointer ..< startIndex + UInt64(data.count)]
             let nextElement = pointer + type.memoryUsage
-            //            print("Got element itself: \n" + elementItself.toHexString())
-            //            print("Next element pointer: \n" + String(nextElement))
             return (Data(elementItself), nextElement)
         }
     }
