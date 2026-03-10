@@ -168,17 +168,22 @@ extension TronABIDecoder {
                 let (v, c) = decodeSignleType(type: subTypes[i], data: elementItself, pointer: consumed)
                 guard let valueUnwrapped = v, let consumedUnwrapped = c else { return (nil, nil) }
                 toReturn.append(valueUnwrapped)
-                if subTypes[i].isStatic {
+                switch subTypes[i] {
+                case .array(type: let subType, length: _):
+                    if !subType.isStatic {
+                        consumed = consumedUnwrapped
+                    } else {
+                        consumed = consumed + consumedUnwrapped
+                    }
+                case .tuple(types: _):
+                    if !subTypes[i].isStatic {
+                        consumed = consumedUnwrapped
+                    } else {
+                        consumed = consumed + consumedUnwrapped
+                    }
+                default:
                     consumed = consumed + consumedUnwrapped
-                } else {
-                    consumed = consumed + 32  // 动态类型在 head 区只占 32 字节
                 }
-            }
-            //            print("Tuple element is: \n" + String(describing: toReturn))
-            if type.isStatic {
-                return (toReturn as AnyObject, consumed)
-            } else {
-                return (toReturn as AnyObject, nextElementPointer)
             }
         case .function:
             //            print("Function element itself: \n" + elementItself.toHexString())
