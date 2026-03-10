@@ -166,9 +166,13 @@ extension TronABIDecoder {
             var consumed:UInt64 = 0
             for i in 0 ..< subTypes.count {
                 let (v, c) = decodeSignleType(type: subTypes[i], data: elementItself, pointer: consumed)
-                guard let valueUnwrapped = v, let consumedUnwrapped = c else {return (nil, nil)}
+                guard let valueUnwrapped = v, let consumedUnwrapped = c else { return (nil, nil) }
                 toReturn.append(valueUnwrapped)
-                consumed = consumed + consumedUnwrapped
+                if subTypes[i].isStatic {
+                    consumed = consumed + consumedUnwrapped
+                } else {
+                    consumed = consumed + 32  // 动态类型在 head 区只占 32 字节
+                }
             }
             //            print("Tuple element is: \n" + String(describing: toReturn))
             if type.isStatic {

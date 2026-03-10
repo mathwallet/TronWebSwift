@@ -197,14 +197,17 @@ extension TronABIEncoder {
             }
         case .address:
             if let string = value as? String {
-                guard let address = TronAddress(string) else {return nil}
-                let data = address.data
-                return data.setLengthLeft(32)
+                guard let address = TronAddress(string) else { return nil }
+                // TronAddress.data 是 21 字节（含 0x41 前缀），ABI 编码只需要后 20 字节
+                let data = address.data.count == 21 ? address.data.dropFirst(1) : address.data
+                return Data(data).setLengthLeft(32)
             } else if let address = value as? TronAddress {
-                let data = address.data
-                return data.setLengthLeft(32)
+                let data = address.data.count == 21 ? address.data.dropFirst(1) : address.data
+                return Data(data).setLengthLeft(32)
             } else if let data = value as? Data {
-                return data.setLengthLeft(32)
+                // 如果传入的 Data 也带了 0x41 前缀，同样处理
+                let cleanData = (data.count == 21 && data[0] == 0x41) ? data.dropFirst(1) : data
+                return Data(cleanData).setLengthLeft(32)
             }
         case .bool:
             if let bool = value as? Bool {
